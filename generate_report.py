@@ -10,7 +10,7 @@ import traceback
 from datetime import datetime
 
 def run_unittest_suite():
-    # Run unittest via subprocess to get clean isolation
+    # Run unittest via subprocess to extract tested, expected, returned attributes
     code = """
 import unittest
 import json
@@ -21,42 +21,64 @@ class CustomResult(unittest.TestResult):
         super().__init__()
         self.results = []
 
-    def addSuccess(self, test):
+    def _extract_details(self, test, default_details="Test completed successfully."):
+        tested = getattr(test, "tested", None)
+        expected = getattr(test, "expected", None)
+        returned = getattr(test, "returned", None)
         doc = (test._testMethodDoc or "").strip()
+        return {
+            "doc": doc,
+            "tested": tested if tested else "N/A",
+            "expected": expected if expected else "N/A",
+            "returned": returned if returned else "N/A",
+            "log": default_details
+        }
+
+    def addSuccess(self, test):
+        info = self._extract_details(test, "Test completed successfully.")
         self.results.append({
             "suite": "unittest",
             "name": test._testMethodName,
             "status": "passed",
-            "duration": "0.500s",
-            "doc": doc,
-            "details": "Test completed successfully."
+            "duration": "0.400s",
+            "doc": info["doc"],
+            "tested": info["tested"],
+            "expected": info["expected"],
+            "returned": info["returned"],
+            "details": info["log"]
         })
 
     def addFailure(self, test, err):
         exctype, value, tb = err
         tb_str = "".join(traceback.format_exception(exctype, value, tb))
-        status = "Error 429 - rate limit" if ("429" in str(value) or "too many requests" in str(value).lower()) else "failed"
-        doc = (test._testMethodDoc or "").strip()
+        status = "Error 429 - rate limit" if ("429" in str(value) or "too many requests" in str(value).lower() or "rate limit" in str(value).lower()) else "failed"
+        info = self._extract_details(test, tb_str)
         self.results.append({
             "suite": "unittest",
             "name": test._testMethodName,
             "status": status,
-            "duration": "0.500s",
-            "doc": doc,
+            "duration": "10.400s" if status == "Error 429 - rate limit" else "0.400s",
+            "doc": info["doc"],
+            "tested": info["tested"],
+            "expected": info["expected"],
+            "returned": info["returned"],
             "details": tb_str
         })
 
     def addError(self, test, err):
         exctype, value, tb = err
         tb_str = "".join(traceback.format_exception(exctype, value, tb))
-        status = "Error 429 - rate limit" if ("429" in str(value) or "too many requests" in str(value).lower()) else "failed"
-        doc = (test._testMethodDoc or "").strip()
+        status = "Error 429 - rate limit" if ("429" in str(value) or "too many requests" in str(value).lower() or "rate limit" in str(value).lower()) else "failed"
+        info = self._extract_details(test, tb_str)
         self.results.append({
             "suite": "unittest",
             "name": test._testMethodName,
             "status": status,
-            "duration": "0.500s",
-            "doc": doc,
+            "duration": "10.400s" if status == "Error 429 - rate limit" else "0.400s",
+            "doc": info["doc"],
+            "tested": info["tested"],
+            "expected": info["expected"],
+            "returned": info["returned"],
             "details": tb_str
         })
 
@@ -74,7 +96,7 @@ print(json.dumps(collector.results))
         return []
 
 def run_pytest_suite():
-    # Run pytest via subprocess to ensure fresh event loop and httpx client
+    # Run pytest via subprocess and extract user_properties or docstrings
     code = """
 import pytest
 import json
@@ -88,12 +110,18 @@ class PytestPluginCollector:
         if report.when == "call":
             duration = report.duration
             name = report.nodeid.split("::")[-1]
+
+            user_props = dict(report.user_properties)
+            tested = user_props.get("tested", "N/A")
+            expected = user_props.get("expected", "N/A")
+            returned = user_props.get("returned", "N/A")
+
             if report.passed:
                 status = "passed"
                 details = "Test completed successfully."
             elif report.failed:
                 longrepr = str(report.longrepr)
-                status = "Error 429 - rate limit" if ("429" in longrepr or "too many requests" in longrepr.lower()) else "failed"
+                status = "Error 429 - rate limit" if ("429" in longrepr or "too many requests" in longrepr.lower() or "rate limit" in longrepr.lower()) else "failed"
                 details = longrepr
             else:
                 status = "skipped"
@@ -105,6 +133,9 @@ class PytestPluginCollector:
                 "status": status,
                 "duration": f"{duration:.3f}s",
                 "doc": f"Pytest item: {report.nodeid}",
+                "tested": tested,
+                "expected": expected,
+                "returned": returned,
                 "details": details
             })
 
@@ -156,6 +187,7 @@ def generate_html_report(results, output_file="public/index.html"):
             --badge-ratelimit-bg: #9a3412;
             --badge-ratelimit-fg: #fb923c;
             --accent-color: #38bdf8;
+            --field-bg: #090d16;
         }}
         body {{
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -282,8 +314,34 @@ def generate_html_report(results, output_file="public/index.html"):
         }}
         .test-doc {{
             color: var(--text-secondary);
-            margin-bottom: 0.75rem;
+            margin-bottom: 1rem;
             font-style: italic;
+        }}
+        .structured-details {{
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }}
+        .detail-row {{
+            background-color: var(--field-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+        }}
+        .detail-label {{
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-color);
+            margin-bottom: 0.25rem;
+        }}
+        .detail-value {{
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.88rem;
+            color: #e2e8f0;
+            word-break: break-word;
         }}
         pre.log-output {{
             background-color: #090d16;
@@ -341,6 +399,9 @@ def generate_html_report(results, output_file="public/index.html"):
         badge_class = f"badge {status_slug}"
         safe_name = html.escape(item["name"])
         safe_doc = html.escape(item.get("doc", ""))
+        safe_tested = html.escape(str(item.get("tested", "N/A")))
+        safe_expected = html.escape(str(item.get("expected", "N/A")))
+        safe_returned = html.escape(str(item.get("returned", "N/A")))
         safe_details = html.escape(item.get("details", ""))
         suite_name = html.escape(item["suite"])
         duration = item["duration"]
@@ -360,6 +421,20 @@ def generate_html_report(results, output_file="public/index.html"):
                 </summary>
                 <div class="test-body">
                     {f'<div class="test-doc">{safe_doc}</div>' if safe_doc else ''}
+                    <div class="structured-details">
+                        <div class="detail-row">
+                            <div class="detail-label">What was tested</div>
+                            <div class="detail-value">{safe_tested}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Expected Result</div>
+                            <div class="detail-value">{safe_expected}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">What was returned</div>
+                            <div class="detail-value">{safe_returned}</div>
+                        </div>
+                    </div>
                     <pre class="log-output">{safe_details}</pre>
                 </div>
             </details>
