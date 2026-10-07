@@ -1,2 +1,102 @@
 # googletrans-test
-Tests the python package googletrans-curl against the old py-googletrans implementation.
+
+A comprehensive test suite and dashboard for validating the [`googletrans`](https://pypi.org/project/googletrans/) Python package (targeting version `4.0.2`).
+
+## Overview
+
+`googletrans` is a free and unlimited Python library that implements the Google Translate API. It uses Google Translate's AJAX API to make calls to detect and translate text.
+
+This repository provides:
+1. **Independent Test Suites:** Runs test cases using both `pytest` and Python's built-in `unittest` framework.
+2. **Interactive HTML Test Dashboard:** Automatically runs both test suites and produces a styled, searchable `index.html` report with collapsible test details and clear status badges (e.g., `passed`, `failed`, `Error 429 - rate limit`).
+3. **Automated GitHub Pages Deployment:** Continuous integration via GitHub Actions deploys the test dashboard to GitHub Pages on every push.
+
+---
+
+## Background & Historical Fixes
+
+### 1. `py-googletrans` vs `googletrans-curl` & `googletrans` 4.0.2
+- **Historical Issue:** The original `googletrans` (v3.0.0) relied on legacy `requests` and a custom token generator (`tk`). Changes to Google's translation endpoint broke token generation, resulting in `HTTP 400 Bad Request` or `AttributeError: 'NoneType' object has no attribute 'group'`.
+- **Alternative Implementations:** Community forks like `googletrans-curl` used `curl_cffi` to mimic browser TLS fingerprints.
+- **Current Version (4.0.2):** `googletrans` v4.0.2 was updated to use `httpx` with asynchronous HTTP requests (`async/await`).
+
+### 2. Async API Requirement in 4.0.2
+Calling `translator.translate("hello")` synchronously in 4.0.2 returns a coroutine object rather than a `Translated` result object:
+```python
+# Incorrect (v3 legacy pattern):
+result = translator.translate("hello", dest="es")
+# AttributeError: 'coroutine' object has no attribute 'text'
+
+# Correct (v4 async pattern):
+result = await translator.translate("hello", dest="es")
+# or asyncio.run(translator.translate("hello", dest="es"))
+```
+
+### 3. Rate Limits (HTTP 429) & IP Blocks
+Because `googletrans` uses public Google Translate endpoints without an official API key, rapid or bulk requests may temporarily trigger HTTP 429 (Too Many Requests) or IP bans. Our test suite handles rate limit exceptions and tags them appropriately in the HTML test report.
+
+---
+
+## Installation & Setup
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/aikenf/googletrans-test.git
+   cd googletrans-test
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+---
+
+## Running the Tests
+
+### Option A: Run Pytest Suite
+```bash
+pytest
+```
+
+### Option B: Run Unittest Suite
+```bash
+python -m unittest discover -s tests -p "test_unittest_*.py"
+```
+
+### Option C: Generate Interactive HTML Report
+To run both suites and generate the GitHub Pages report in `public/index.html`:
+```bash
+python generate_report.py
+```
+Open `public/index.html` in your web browser to view the interactive test report with collapsible run details.
+
+---
+
+## Continuous Integration & GitHub Pages
+
+The GitHub Actions workflow `.github/workflows/deploy-pages.yml` automatically triggers on push to `main` / `master` branch. It:
+1. Installs Python dependencies.
+2. Runs `python generate_report.py` to test `googletrans` and render `public/index.html`.
+3. Uploads `public/` and deploys it directly to GitHub Pages using `actions/deploy-pages@v4`.
+
+---
+
+## Project Structure
+
+```
+googletrans-test/
+├── .github/
+│   └── workflows/
+│       └── deploy-pages.yml  # GitHub Actions deploy workflow
+├── tests/
+│   ├── test_pytest_suite.py  # Pytest test cases
+│   └── test_unittest_suite.py# Unittest test cases
+├── generate_report.py        # Custom HTML report generator
+├── AGENTS.md                 # Guidelines for agentic development
+├── CHANGELOG.md              # Project version history & release notes
+├── pyproject.toml            # Project configuration
+├── pytest.ini                # Pytest configuration
+├── requirements.txt          # Requirements file
+└── README.md                 # Project documentation
+```

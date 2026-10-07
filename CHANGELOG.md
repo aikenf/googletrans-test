@@ -1,0 +1,24 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [0.1.0] - 2026-10-07
+
+### Added
+- **Test Suites:** Created comprehensive test cases for `googletrans` 4.0.2 covering:
+  - Simple single-word and sentence translations.
+  - Specific target/source language selections and language auto-detection (`detect`).
+  - Batch string translations.
+  - Complex scenarios including special characters, HTML tags, punctuation, long texts, and invalid language code handling.
+- **Independent Test Frameworks:** Supported both `pytest` (`tests/test_pytest_suite.py`) and standard library `unittest` (`tests/test_unittest_suite.py`).
+- **Custom HTML Test Report Generator:** Added `generate_report.py` to aggregate results from both `pytest` and `unittest` into an interactive `public/index.html` report with collapsible test run details and status badges ("passed", "failed", "Error 429 - rate limit").
+- **GitHub Pages CI/CD Workflow:** Added `.github/workflows/deploy-pages.yml` utilizing modern GitHub Actions (`actions/upload-pages-artifact@v3` and `actions/deploy-pages@v4`) avoiding Node 20 deprecation warnings.
+- **Documentation:** Added `AGENTS.md`, updated `README.md` with historical background/fixes, and created `pyproject.toml`, `requirements.txt`, and `pytest.ini`.
+
+### Historical Issues & Fix Tracking
+- **Async API Migration:** In `googletrans` v3.x, `Translator.translate` was synchronous. In v4.0.0rc1/v4.0.2, methods became async (`httpx` backend). Fixed by adding `async/await` and `pytest-asyncio` support.
+- **AttributeError 'coroutine' object has no attribute 'text':** Occurred when calling `t.translate(...)` without `await` in v4.0.2. Documented and tested in both test runners.
+- **Rate Limit (HTTP 429) & Token Generation Errors:** Historical issues with Google's web API blocking frequent requests without API keys. Added explicit status classification in report generator.

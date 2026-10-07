@@ -1,0 +1,36 @@
+# AGENTS.md
+
+Welcome! This repository contains test suites, custom test report generators, and CI/CD automation for validating the Python `googletrans` library (version 4.0.2).
+
+## Instructions for AI Agents & Developers
+
+### Overview
+`googletrans` is a free and unlimited Python library that implements the Google Translate API. Starting with version 4.0.0+, `googletrans` uses `httpx` internally and many methods (such as `Translator.translate` and `Translator.detect`) are **asynchronous coroutines**.
+
+### Code Conventions & Guidelines
+- **Asynchronous Execution:** Always call `Translator` methods within an async context (`await translator.translate(...)`) or wrap them in `asyncio.run(...)` when writing synchronous wrappers or tests.
+- **Testing Requirements:** Tests are split into two independent test runners:
+  1. `pytest` suite in `tests/test_pytest_suite.py`
+  2. `unittest` suite in `tests/test_unittest_suite.py`
+- **Error Handling:** Google Translate endpoints can return HTTP 429 (Too Many Requests) or JSON parsing errors when rate-limited. Test cases should gracefully handle rate limits when appropriate.
+
+### Commands to Run Tests & Verification
+- **Run Pytest Suite:**
+  ```bash
+  pytest tests/test_pytest_suite.py
+  ```
+- **Run Unittest Suite:**
+  ```bash
+  python -m unittest discover -s tests -p "test_unittest_*.py"
+  ```
+- **Generate Custom Test Report:**
+  ```bash
+  python generate_report.py
+  ```
+  This command executes both test suites and generates `public/index.html` for GitHub Pages deployment.
+
+### Verification Checklist
+Before committing any changes:
+1. Ensure both `pytest` and `unittest` run cleanly without syntax errors.
+2. Run `python generate_report.py` to confirm that `public/index.html` builds correctly.
+3. Check that no sensitive tokens or environment variables are leaked.
