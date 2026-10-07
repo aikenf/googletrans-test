@@ -5,9 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.0] - 2026-10-07
+## [1.0.0] - 2026-10-07
 
 ### Added
+- **Initial 1.0 Release:** Production-ready release of test suites and test dashboard for `googletrans` 4.0.2.
 - **Test Suites:** Created comprehensive test cases for `googletrans` 4.0.2 covering:
   - Simple single-word and sentence translations.
   - Specific target/source language selections and language auto-detection (`detect`).

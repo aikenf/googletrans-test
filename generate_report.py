@@ -311,7 +311,7 @@ def generate_html_report(results, output_file="public/index.html"):
     <div class="container">
         <header>
             <h1>googletrans Test Suite Dashboard</h1>
-            <div class="subtitle">Generated on {now_str} UTC | Package: googletrans 4.0.2</div>
+            <div class="subtitle">Generated on {now_str} UTC | Version 1.0.0 | Package: googletrans 4.0.2</div>
         </header>
 
         <section class="summary-grid">
