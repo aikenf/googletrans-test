@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>googletrans Test Suite Execution Dashboard</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --badge-passed-bg: #065f46;
+            --badge-passed-fg: #34d399;
+            --badge-failed-bg: #991b1b;
+            --badge-failed-fg: #f87171;
+            --badge-ratelimit-bg: #9a3412;
+            --badge-ratelimit-fg: #fb923c;
+            --accent-color: #38bdf8;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 2rem;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 2rem;
+            color: var(--text-primary);
+        }
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .summary-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+        .summary-card .number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-top: 0.25rem;
+        }
+        .summary-card.passed .number { color: var(--badge-passed-fg); }
+        .summary-card.failed .number { color: var(--badge-failed-fg); }
+        .summary-card.ratelimit .number { color: var(--badge-ratelimit-fg); }
+        .summary-card.total .number { color: var(--accent-color); }
+
+        .test-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        details.test-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+        details.test-card[open] {
+            border-color: var(--accent-color);
+        }
+        summary.test-header {
+            padding: 1rem 1.25rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            user-select: none;
+            list-style: none;
+        }
+        summary.test-header::-webkit-details-marker {
+            display: none;
+        }
+        .test-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+        }
+        .suite-tag {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            background-color: #334155;
+            color: #cbd5e1;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        .badge {
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .badge.passed {
+            background-color: var(--badge-passed-bg);
+            color: var(--badge-passed-fg);
+        }
+        .badge.failed {
+            background-color: var(--badge-failed-bg);
+            color: var(--badge-failed-fg);
+        }
+        .badge.error-429---rate-limit {
+            background-color: var(--badge-ratelimit-bg);
+            color: var(--badge-ratelimit-fg);
+        }
+        .test-duration {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-left: auto;
+            margin-right: 1rem;
+        }
+        .test-body {
+            padding: 1.25rem;
+            border-top: 1px solid var(--border-color);
+            background-color: #0f172a80;
+            font-size: 0.9rem;
+        }
+        .test-doc {
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            font-style: italic;
+        }
+        pre.log-output {
+            background-color: #090d16;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            margin: 0;
+            border: 1px solid #1e293b;
+        }
+        footer {
+            margin-top: 3rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>googletrans Test Suite Dashboard</h1>
+            <div class="subtitle">Generated on 2026-10-07 17:00:28 UTC | Package: googletrans 4.0.2</div>
+        </header>
+
+        <section class="summary-grid">
+            <div class="summary-card total">
+                <div>Total Tests</div>
+                <div class="number">13</div>
+            </div>
+            <div class="summary-card passed">
+                <div>Passed</div>
+                <div class="number">13</div>
+            </div>
+            <div class="summary-card failed">
+                <div>Failed</div>
+                <div class="number">0</div>
+            </div>
+            <div class="summary-card ratelimit">
+                <div>Rate Limited (429)</div>
+                <div class="number">0</div>
+            </div>
+        </section>
+
+        <main class="test-list">
+
+            <details class="test-card">
+                <summary class="test-header">
+                    <div class="test-title">
+                        <span class="suite-tag">unittest</span>
+                        <span>test_batch_translation</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="test-duration">0.500s</span>
+                        <span class="badge passed">passed</span>
+                    </div>
+                </summary>
+                <div class="test-body">
+                    <div class="test-doc">Unittest: Batch translation of multiple sentences.</div>
+                    <pre class="log-output">Test completed successfully.</pre>
+                </div>
+            </details>
+
+            <details class="test-card">
+                <summary class="test-header">
+                    <div class="test-title">
+                        <span class="suite-tag">unittest</span>
+                        <span>test_invalid_language_code</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="test-duration">0.500s</span>
+                        <span class="badge passed">passed</span>
+                    </div>
+                </summary>
+                <div class="test-body">
+                    <div class="test-doc">Unittest: Invalid destination language code raises ValueError.</div>
+                    <pre class="log-output">Test completed successfully.</pre>
+                </div>
+            </details>
+
+            <details class="test-card">
+                <summary class="test-header">
+                    <div class="test-title">
+                        <span class="suite-tag">unittest</span>
+                        <span>test_language_detection</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="test-duration">0.500s</span>
+                        <span class="badge passed">passed</span>
+                    </div>
+                </summary>
+                <div class="test-body">
+                    <div class="test-doc">Unittest: Language detection for English.</div>
+                    <pre class="log-output">Test completed successfully.</pre>
+                </div>
+            </details>
+
+            <details class="test-card">
+                <summary class="test-header">
+                    <div class="test-title">
+                        <span class="suite-tag">unittest</span>
+                        <span>test_simple_translation</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="test-duration">0.500s</span>
+                        <span class="badge passed">passed</span>
+                    </div>
+                </summary>
+                <div class="test-body">
+                    <div class="test-doc">Unittest: Simple translation (English to Spanish).</div>
+                    <pre class="log-output">Test completed successfully.</pre>
+                </div>
+            </details>
+
+            <details class="test-card">
+                <summary class="test-header">
+                    <div class="test-title">
+                        <span class="suite-tag">unittest</span>
+                        <span>test_special_characters</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="test-duration">0.500s</span>
+                        <span class="badge passed">passed</span>
+                    </div>
+                </summary>
+                <div class="test-body">
+                    <div class="test-doc">Unittest: Handling unicode and special characters.</div>
+                    <pre class="log-output">Test completed successfully.</pre>
+                </div>
+            </details>
+
+            <details class="test-card">
+                <summary class="test-header">
+                    <div class="test-title">
+                        <span class="suite-tag">unittest</span>
+                        <span>test_specific_language_pair</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="test-duration">0.500s</span>
+                        <span class="badge passed">passed</span>
+                    </div>
+                </summary>
+                <div class="test-body">
+                    <div class="test-doc">Unittest: Specific language pair (German to English).</div>
+                    <pre class="log-output">Test completed successfully.</pre>
+                </div>
+            </details>
+
+            <details class="test-card">
+                <summary class="test-header">
+                    <div class="test-title">
+                        <span class="suite-tag">pytest</span>
+                        <span>test_simple_translation</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="test-duration">0.365s</span>
+                        <span class="badge passed">passed</span>
+                    </div>
+                </summary>
+                <div class="test-body">
+                    <div class="test-doc">Pytest item: tests/test_pytest_suite.py::test_simple_translation</div>
+                    <pre class="log-output">Test completed successfully.</pre>
+                </div>
+            </details>
+
+            <details class="test-card">
+                <summary class="test-header">
+                    <div class="test-title">
+                        <span class="suite-tag">pytest</span>
+                        <span>test_specific_language_pair</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="test-duration">0.331s</span>
+                        <span class="badge passed">passed</span>
+                    </div>
+                </summary>
+                <div class="test-body">
+                    <div class="test-doc">Pytest item: tests/test_pytest_suite.py::test_specific_language_pair</div>
+                    <pre class="log-output">Test completed successfully.</pre>
+                </div>
+            </details>
+
+            <details class="test-card">
+                <summary class="test-header">
+                    <div class="test-title">
+                        <span class="suite-tag">pytest</span>
+                        <span>test_language_detection</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="test-duration">0.389s</span>
+                        <span class="badge passed">passed</span>
+                    </div>
+                </summary>
+                <div class="test-body">
+                    <div class="test-doc">Pytest item: tests/test_pytest_suite.py::test_language_detection</div>
+                    <pre class="log-output">Test completed successfully.</pre>
+                </div>
+            </details>
+
+            <details class="test-card">
+                <summary class="test-header">
+                    <div class="test-title">
+                        <span class="suite-tag">pytest</span>
+                        <span>test_batch_translation</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="test-duration">0.873s</span>
+                        <span class="badge passed">passed</span>
+                    </div>
+                </summary>
+                <div class="test-body">
+                    <div class="test-doc">Pytest item: tests/test_pytest_suite.py::test_batch_translation</div>
+                    <pre class="log-output">Test completed successfully.</pre>
+                </div>
+            </details>
+
+            <details class="test-card">
+                <summary class="test-header">
+                    <div class="test-title">
+                        <span class="suite-tag">pytest</span>
+                        <span>test_special_characters_and_formatting</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="test-duration">0.389s</span>
+                        <span class="badge passed">passed</span>
+                    </div>
+                </summary>
+                <div class="test-body">
+                    <div class="test-doc">Pytest item: tests/test_pytest_suite.py::test_special_characters_and_formatting</div>
+                    <pre class="log-output">Test completed successfully.</pre>
+                </div>
+            </details>
+
+            <details class="test-card">
+                <summary class="test-header">
+                    <div class="test-title">
+                        <span class="suite-tag">pytest</span>
+                        <span>test_multiline_long_text</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="test-duration">0.444s</span>
+                        <span class="badge passed">passed</span>
+                    </div>
+                </summary>
+                <div class="test-body">
+                    <div class="test-doc">Pytest item: tests/test_pytest_suite.py::test_multiline_long_text</div>
+                    <pre class="log-output">Test completed successfully.</pre>
+                </div>
+            </details>
+
+            <details class="test-card">
+                <summary class="test-header">
+                    <div class="test-title">
+                        <span class="suite-tag">pytest</span>
+                        <span>test_invalid_language_code</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="test-duration">0.035s</span>
+                        <span class="badge passed">passed</span>
+                    </div>
+                </summary>
+                <div class="test-body">
+                    <div class="test-doc">Pytest item: tests/test_pytest_suite.py::test_invalid_language_code</div>
+                    <pre class="log-output">Test completed successfully.</pre>
+                </div>
+            </details>
+
+        </main>
+
+        <footer>
+            <p>Automated report generated by <code>generate_report.py</code> for GitHub Pages deployment.</p>
+        </footer>
+    </div>
+</body>
+</html>
