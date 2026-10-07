@@ -18,6 +18,7 @@
             --badge-ratelimit-bg: #9a3412;
             --badge-ratelimit-fg: #fb923c;
             --accent-color: #38bdf8;
+            --field-bg: #090d16;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -144,8 +145,34 @@
         }
         .test-doc {
             color: var(--text-secondary);
-            margin-bottom: 0.75rem;
+            margin-bottom: 1rem;
             font-style: italic;
+        }
+        .structured-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .detail-row {
+            background-color: var(--field-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+        }
+        .detail-label {
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-color);
+            margin-bottom: 0.25rem;
+        }
+        .detail-value {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.88rem;
+            color: #e2e8f0;
+            word-break: break-word;
         }
         pre.log-output {
             background-color: #090d16;
@@ -173,17 +200,17 @@
     <div class="container">
         <header>
             <h1>googletrans Test Suite Dashboard</h1>
-            <div class="subtitle">Generated on 2026-10-07 17:49:21 UTC | Version 1.0.0 | Package: googletrans 4.0.2</div>
+            <div class="subtitle">Generated on 2026-10-07 18:35:01 UTC | Version 1.0.0 | Package: googletrans 4.0.2</div>
         </header>
 
         <section class="summary-grid">
             <div class="summary-card total">
                 <div>Total Tests</div>
-                <div class="number">13</div>
+                <div class="number">20</div>
             </div>
             <div class="summary-card passed">
                 <div>Passed</div>
-                <div class="number">13</div>
+                <div class="number">20</div>
             </div>
             <div class="summary-card failed">
                 <div>Failed</div>
@@ -204,12 +231,57 @@
                         <span>test_batch_translation</span>
                     </div>
                     <div style="display: flex; align-items: center;">
-                        <span class="test-duration">0.500s</span>
+                        <span class="test-duration">0.400s</span>
                         <span class="badge passed">passed</span>
                     </div>
                 </summary>
                 <div class="test-body">
-                    <div class="test-doc">Unittest: Batch translation of multiple sentences.</div>
+                    <div class="test-doc">Unittest (Complicated): Batch translation of multiple sentences to French.</div>
+                    <div class="structured-details">
+                        <div class="detail-row">
+                            <div class="detail-label">What was tested</div>
+                            <div class="detail-value">Batch translating list: [&#x27;One&#x27;, &#x27;Two&#x27;, &#x27;Three&#x27;] to French (dest=&#x27;fr&#x27;)</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Expected Result</div>
+                            <div class="detail-value">List of 3 Translated objects with dest=&#x27;fr&#x27;</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">What was returned</div>
+                            <div class="detail-value">List of 3 items: [&#x27;Un&#x27;, &#x27;Deux&#x27;, &#x27;Trois&#x27;]</div>
+                        </div>
+                    </div>
+                    <pre class="log-output">Test completed successfully.</pre>
+                </div>
+            </details>
+
+            <details class="test-card">
+                <summary class="test-header">
+                    <div class="test-title">
+                        <span class="suite-tag">unittest</span>
+                        <span>test_english_to_german_as_is_check</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="test-duration">0.400s</span>
+                        <span class="badge passed">passed</span>
+                    </div>
+                </summary>
+                <div class="test-body">
+                    <div class="test-doc">Unittest (Complicated): English to German, ensuring text is not returned as-is.</div>
+                    <div class="structured-details">
+                        <div class="detail-row">
+                            <div class="detail-label">What was tested</div>
+                            <div class="detail-value">Translating English sentence &#x27;The quick brown fox jumps over the lazy dog.&#x27; to German (dest=&#x27;de&#x27;)</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Expected Result</div>
+                            <div class="detail-value">German translation distinct from English source text (e.g. &#x27;Der schnelle braune Fuchs...&#x27;)</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">What was returned</div>
+                            <div class="detail-value">&#x27;Der schnelle Braunfuchs springt über den faulen Hund.&#x27;</div>
+                        </div>
+                    </div>
                     <pre class="log-output">Test completed successfully.</pre>
                 </div>
             </details>
@@ -221,12 +293,26 @@
                         <span>test_invalid_language_code</span>
                     </div>
                     <div style="display: flex; align-items: center;">
-                        <span class="test-duration">0.500s</span>
+                        <span class="test-duration">0.400s</span>
                         <span class="badge passed">passed</span>
                     </div>
                 </summary>
                 <div class="test-body">
-                    <div class="test-doc">Unittest: Invalid destination language code raises ValueError.</div>
+                    <div class="test-doc">Unittest (Edge Case): Invalid destination language code raises ValueError.</div>
+                    <div class="structured-details">
+                        <div class="detail-row">
+                            <div class="detail-label">What was tested</div>
+                            <div class="detail-value">Translating &#x27;Hello&#x27; with invalid destination language &#x27;nonexistent_lang&#x27;</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Expected Result</div>
+                            <div class="detail-value">ValueError raised due to invalid language code</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">What was returned</div>
+                            <div class="detail-value">Raised exception: ValueError: invalid destination language</div>
+                        </div>
+                    </div>
                     <pre class="log-output">Test completed successfully.</pre>
                 </div>
             </details>
@@ -238,12 +324,119 @@
                         <span>test_language_detection</span>
                     </div>
                     <div style="display: flex; align-items: center;">
-                        <span class="test-duration">0.500s</span>
+                        <span class="test-duration">0.400s</span>
                         <span class="badge passed">passed</span>
                     </div>
                 </summary>
                 <div class="test-body">
-                    <div class="test-doc">Unittest: Language detection for English.</div>
+                    <div class="test-doc">Unittest: Language auto-detection for English.</div>
+                    <div class="structured-details">
+                        <div class="detail-row">
+                            <div class="detail-label">What was tested</div>
+                            <div class="detail-value">Detecting language for: &#x27;This is a test sentence in English.&#x27;</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Expected Result</div>
+                            <div class="detail-value">Detected language code &#x27;en&#x27;</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">What was returned</div>
+                            <div class="detail-value">lang=&#x27;en&#x27;, confidence=1</div>
+                        </div>
+                    </div>
+                    <pre class="log-output">Test completed successfully.</pre>
+                </div>
+            </details>
+
+            <details class="test-card">
+                <summary class="test-header">
+                    <div class="test-title">
+                        <span class="suite-tag">unittest</span>
+                        <span>test_multiline_long_text</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="test-duration">0.400s</span>
+                        <span class="badge passed">passed</span>
+                    </div>
+                </summary>
+                <div class="test-body">
+                    <div class="test-doc">Unittest (Complicated): Multiline long text translation to German.</div>
+                    <div class="structured-details">
+                        <div class="detail-row">
+                            <div class="detail-label">What was tested</div>
+                            <div class="detail-value">Translating multiline text (length 182 chars) to German (dest=&#x27;de&#x27;)</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Expected Result</div>
+                            <div class="detail-value">German translated text longer than 20 chars, not identical to English source</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">What was returned</div>
+                            <div class="detail-value">&#x27;Googletrans ist eine kostenlose und unbegrenzte Python-Bibli...&#x27; (Length: 207)</div>
+                        </div>
+                    </div>
+                    <pre class="log-output">Test completed successfully.</pre>
+                </div>
+            </details>
+
+            <details class="test-card">
+                <summary class="test-header">
+                    <div class="test-title">
+                        <span class="suite-tag">unittest</span>
+                        <span>test_pypi_readme_korean_example</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="test-duration">0.400s</span>
+                        <span class="badge passed">passed</span>
+                    </div>
+                </summary>
+                <div class="test-body">
+                    <div class="test-doc">Unittest (PyPI README Simple Example 1): Korean text translation to English.</div>
+                    <div class="structured-details">
+                        <div class="detail-row">
+                            <div class="detail-label">What was tested</div>
+                            <div class="detail-value">Translating &#x27;안녕하세요.&#x27; to English (pypi description standard usage)</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Expected Result</div>
+                            <div class="detail-value">Non-empty translated text in English (e.g. &#x27;hello&#x27; or &#x27;hi&#x27;)</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">What was returned</div>
+                            <div class="detail-value">&#x27;hello.&#x27; (src=ko, dest=en)</div>
+                        </div>
+                    </div>
+                    <pre class="log-output">Test completed successfully.</pre>
+                </div>
+            </details>
+
+            <details class="test-card">
+                <summary class="test-header">
+                    <div class="test-title">
+                        <span class="suite-tag">unittest</span>
+                        <span>test_pypi_readme_latin_example</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="test-duration">0.400s</span>
+                        <span class="badge passed">passed</span>
+                    </div>
+                </summary>
+                <div class="test-body">
+                    <div class="test-doc">Unittest (PyPI README Simple Example 2): Latin &#x27;veritas lux mea&#x27; to English.</div>
+                    <div class="structured-details">
+                        <div class="detail-row">
+                            <div class="detail-label">What was tested</div>
+                            <div class="detail-value">Translating Latin &#x27;veritas lux mea&#x27; to English with explicit src=&#x27;la&#x27;</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Expected Result</div>
+                            <div class="detail-value">Translated text containing &#x27;truth&#x27; or &#x27;light&#x27;</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">What was returned</div>
+                            <div class="detail-value">&#x27;truth is my light&#x27; (src=la, dest=en)</div>
+                        </div>
+                    </div>
                     <pre class="log-output">Test completed successfully.</pre>
                 </div>
             </details>
@@ -255,12 +448,26 @@
                         <span>test_simple_translation</span>
                     </div>
                     <div style="display: flex; align-items: center;">
-                        <span class="test-duration">0.500s</span>
+                        <span class="test-duration">0.400s</span>
                         <span class="badge passed">passed</span>
                     </div>
                 </summary>
                 <div class="test-body">
-                    <div class="test-doc">Unittest: Simple translation (English to Spanish).</div>
+                    <div class="test-doc">Unittest: Simple single-word translation (English to Spanish).</div>
+                    <div class="structured-details">
+                        <div class="detail-row">
+                            <div class="detail-label">What was tested</div>
+                            <div class="detail-value">Translating word &#x27;Hello&#x27; to Spanish (dest=&#x27;es&#x27;)</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Expected Result</div>
+                            <div class="detail-value">&#x27;Hola&#x27;</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">What was returned</div>
+                            <div class="detail-value">&#x27;Hola&#x27; (dest=es)</div>
+                        </div>
+                    </div>
                     <pre class="log-output">Test completed successfully.</pre>
                 </div>
             </details>
@@ -272,12 +479,26 @@
                         <span>test_special_characters</span>
                     </div>
                     <div style="display: flex; align-items: center;">
-                        <span class="test-duration">0.500s</span>
+                        <span class="test-duration">0.400s</span>
                         <span class="badge passed">passed</span>
                     </div>
                 </summary>
                 <div class="test-body">
-                    <div class="test-doc">Unittest: Handling unicode and special characters.</div>
+                    <div class="test-doc">Unittest (Complicated): Handling unicode, special characters, and numbers.</div>
+                    <div class="structured-details">
+                        <div class="detail-row">
+                            <div class="detail-label">What was tested</div>
+                            <div class="detail-value">Translating unicode/special char text &#x27;Pythön &amp; Tränslatïon: 100% test!&#x27; to Spanish (dest=&#x27;es&#x27;)</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Expected Result</div>
+                            <div class="detail-value">Translated text preserving &#x27;100%&#x27;</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">What was returned</div>
+                            <div class="detail-value">&#x27;Python y Trancelatïon: ¡100% prueba!&#x27;</div>
+                        </div>
+                    </div>
                     <pre class="log-output">Test completed successfully.</pre>
                 </div>
             </details>
@@ -289,12 +510,26 @@
                         <span>test_specific_language_pair</span>
                     </div>
                     <div style="display: flex; align-items: center;">
-                        <span class="test-duration">0.500s</span>
+                        <span class="test-duration">0.400s</span>
                         <span class="badge passed">passed</span>
                     </div>
                 </summary>
                 <div class="test-body">
                     <div class="test-doc">Unittest: Specific language pair (German to English).</div>
+                    <div class="structured-details">
+                        <div class="detail-row">
+                            <div class="detail-label">What was tested</div>
+                            <div class="detail-value">Translating German phrase &#x27;Guten Morgen&#x27; to English (src=&#x27;de&#x27;, dest=&#x27;en&#x27;)</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Expected Result</div>
+                            <div class="detail-value">&#x27;Good morning&#x27;</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">What was returned</div>
+                            <div class="detail-value">&#x27;Good morning&#x27; (src=de, dest=en)</div>
+                        </div>
+                    </div>
                     <pre class="log-output">Test completed successfully.</pre>
                 </div>
             </details>
@@ -303,15 +538,29 @@
                 <summary class="test-header">
                     <div class="test-title">
                         <span class="suite-tag">pytest</span>
-                        <span>test_simple_translation</span>
+                        <span>test_pypi_readme_korean_example</span>
                     </div>
                     <div style="display: flex; align-items: center;">
-                        <span class="test-duration">0.387s</span>
+                        <span class="test-duration">0.206s</span>
                         <span class="badge passed">passed</span>
                     </div>
                 </summary>
                 <div class="test-body">
-                    <div class="test-doc">Pytest item: tests/test_pytest_suite.py::test_simple_translation</div>
+                    <div class="test-doc">Pytest item: tests/test_pytest_suite.py::test_pypi_readme_korean_example</div>
+                    <div class="structured-details">
+                        <div class="detail-row">
+                            <div class="detail-label">What was tested</div>
+                            <div class="detail-value">Translating &#x27;안녕하세요.&#x27; to English (pypi description standard usage)</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Expected Result</div>
+                            <div class="detail-value">Non-empty translated text in English (e.g. &#x27;hello&#x27; or &#x27;hi&#x27;)</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">What was returned</div>
+                            <div class="detail-value">&#x27;hello.&#x27; (src=ko, dest=en)</div>
+                        </div>
+                    </div>
                     <pre class="log-output">Test completed successfully.</pre>
                 </div>
             </details>
@@ -320,15 +569,91 @@
                 <summary class="test-header">
                     <div class="test-title">
                         <span class="suite-tag">pytest</span>
-                        <span>test_specific_language_pair</span>
+                        <span>test_pypi_readme_latin_example</span>
                     </div>
                     <div style="display: flex; align-items: center;">
-                        <span class="test-duration">0.298s</span>
+                        <span class="test-duration">0.417s</span>
                         <span class="badge passed">passed</span>
                     </div>
                 </summary>
                 <div class="test-body">
-                    <div class="test-doc">Pytest item: tests/test_pytest_suite.py::test_specific_language_pair</div>
+                    <div class="test-doc">Pytest item: tests/test_pytest_suite.py::test_pypi_readme_latin_example</div>
+                    <div class="structured-details">
+                        <div class="detail-row">
+                            <div class="detail-label">What was tested</div>
+                            <div class="detail-value">Translating Latin &#x27;veritas lux mea&#x27; to English with explicit src=&#x27;la&#x27;</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Expected Result</div>
+                            <div class="detail-value">Translated text containing &#x27;truth&#x27; or &#x27;light&#x27;</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">What was returned</div>
+                            <div class="detail-value">&#x27;truth is my light&#x27; (src=la, dest=en)</div>
+                        </div>
+                    </div>
+                    <pre class="log-output">Test completed successfully.</pre>
+                </div>
+            </details>
+
+            <details class="test-card">
+                <summary class="test-header">
+                    <div class="test-title">
+                        <span class="suite-tag">pytest</span>
+                        <span>test_simple_word_english_to_spanish</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="test-duration">0.486s</span>
+                        <span class="badge passed">passed</span>
+                    </div>
+                </summary>
+                <div class="test-body">
+                    <div class="test-doc">Pytest item: tests/test_pytest_suite.py::test_simple_word_english_to_spanish</div>
+                    <div class="structured-details">
+                        <div class="detail-row">
+                            <div class="detail-label">What was tested</div>
+                            <div class="detail-value">Translating word &#x27;Hello&#x27; to Spanish (dest=&#x27;es&#x27;)</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Expected Result</div>
+                            <div class="detail-value">&#x27;Hola&#x27;</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">What was returned</div>
+                            <div class="detail-value">&#x27;Hola&#x27; (dest=es)</div>
+                        </div>
+                    </div>
+                    <pre class="log-output">Test completed successfully.</pre>
+                </div>
+            </details>
+
+            <details class="test-card">
+                <summary class="test-header">
+                    <div class="test-title">
+                        <span class="suite-tag">pytest</span>
+                        <span>test_specific_language_pair_german_to_english</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="test-duration">0.279s</span>
+                        <span class="badge passed">passed</span>
+                    </div>
+                </summary>
+                <div class="test-body">
+                    <div class="test-doc">Pytest item: tests/test_pytest_suite.py::test_specific_language_pair_german_to_english</div>
+                    <div class="structured-details">
+                        <div class="detail-row">
+                            <div class="detail-label">What was tested</div>
+                            <div class="detail-value">Translating German phrase &#x27;Guten Morgen&#x27; to English (src=&#x27;de&#x27;, dest=&#x27;en&#x27;)</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Expected Result</div>
+                            <div class="detail-value">&#x27;Good morning&#x27;</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">What was returned</div>
+                            <div class="detail-value">&#x27;Good morning&#x27; (src=de, dest=en)</div>
+                        </div>
+                    </div>
                     <pre class="log-output">Test completed successfully.</pre>
                 </div>
             </details>
@@ -340,12 +665,57 @@
                         <span>test_language_detection</span>
                     </div>
                     <div style="display: flex; align-items: center;">
-                        <span class="test-duration">0.538s</span>
+                        <span class="test-duration">0.075s</span>
                         <span class="badge passed">passed</span>
                     </div>
                 </summary>
                 <div class="test-body">
                     <div class="test-doc">Pytest item: tests/test_pytest_suite.py::test_language_detection</div>
+                    <div class="structured-details">
+                        <div class="detail-row">
+                            <div class="detail-label">What was tested</div>
+                            <div class="detail-value">Detecting language for: &#x27;This is a test sentence in English.&#x27;</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Expected Result</div>
+                            <div class="detail-value">Detected language code &#x27;en&#x27;</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">What was returned</div>
+                            <div class="detail-value">lang=&#x27;en&#x27;, confidence=1</div>
+                        </div>
+                    </div>
+                    <pre class="log-output">Test completed successfully.</pre>
+                </div>
+            </details>
+
+            <details class="test-card">
+                <summary class="test-header">
+                    <div class="test-title">
+                        <span class="suite-tag">pytest</span>
+                        <span>test_english_to_german_as_is_check</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="test-duration">1.210s</span>
+                        <span class="badge passed">passed</span>
+                    </div>
+                </summary>
+                <div class="test-body">
+                    <div class="test-doc">Pytest item: tests/test_pytest_suite.py::test_english_to_german_as_is_check</div>
+                    <div class="structured-details">
+                        <div class="detail-row">
+                            <div class="detail-label">What was tested</div>
+                            <div class="detail-value">Translating English sentence &#x27;The quick brown fox jumps over the lazy dog.&#x27; to German (dest=&#x27;de&#x27;)</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Expected Result</div>
+                            <div class="detail-value">German translation distinct from English source text (e.g. &#x27;Der schnelle braune Fuchs...&#x27;)</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">What was returned</div>
+                            <div class="detail-value">&#x27;Der schnelle Braunfuchs springt über den faulen Hund.&#x27;</div>
+                        </div>
+                    </div>
                     <pre class="log-output">Test completed successfully.</pre>
                 </div>
             </details>
@@ -357,12 +727,26 @@
                         <span>test_batch_translation</span>
                     </div>
                     <div style="display: flex; align-items: center;">
-                        <span class="test-duration">0.719s</span>
+                        <span class="test-duration">0.676s</span>
                         <span class="badge passed">passed</span>
                     </div>
                 </summary>
                 <div class="test-body">
                     <div class="test-doc">Pytest item: tests/test_pytest_suite.py::test_batch_translation</div>
+                    <div class="structured-details">
+                        <div class="detail-row">
+                            <div class="detail-label">What was tested</div>
+                            <div class="detail-value">Batch translating list: [&#x27;Good morning&#x27;, &#x27;Thank you&#x27;, &#x27;Goodbye&#x27;] to Japanese (dest=&#x27;ja&#x27;)</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Expected Result</div>
+                            <div class="detail-value">List of 3 Translated objects with dest=&#x27;ja&#x27;</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">What was returned</div>
+                            <div class="detail-value">List of 3 items: [&#x27;おはよう&#x27;, &#x27;ありがとう&#x27;, &#x27;さようなら&#x27;]</div>
+                        </div>
+                    </div>
                     <pre class="log-output">Test completed successfully.</pre>
                 </div>
             </details>
@@ -374,12 +758,26 @@
                         <span>test_special_characters_and_formatting</span>
                     </div>
                     <div style="display: flex; align-items: center;">
-                        <span class="test-duration">0.324s</span>
+                        <span class="test-duration">0.089s</span>
                         <span class="badge passed">passed</span>
                     </div>
                 </summary>
                 <div class="test-body">
                     <div class="test-doc">Pytest item: tests/test_pytest_suite.py::test_special_characters_and_formatting</div>
+                    <div class="structured-details">
+                        <div class="detail-row">
+                            <div class="detail-label">What was tested</div>
+                            <div class="detail-value">Translating formatted HTML text &#x27;Hello &lt;b&gt;world&lt;/b&gt;! Special symbols: @#$% &amp; 1234.&#x27; to Spanish (dest=&#x27;es&#x27;)</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Expected Result</div>
+                            <div class="detail-value">Translated text preserving HTML tags &lt;b&gt;...&lt;/b&gt;, symbols @#$%, and numbers 1234</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">What was returned</div>
+                            <div class="detail-value">&#x27;¡Hola &lt;b&gt;mundo&lt;/b&gt;! Símbolos especiales: @#$% y 1234.&#x27;</div>
+                        </div>
+                    </div>
                     <pre class="log-output">Test completed successfully.</pre>
                 </div>
             </details>
@@ -391,12 +789,26 @@
                         <span>test_multiline_long_text</span>
                     </div>
                     <div style="display: flex; align-items: center;">
-                        <span class="test-duration">0.295s</span>
+                        <span class="test-duration">1.195s</span>
                         <span class="badge passed">passed</span>
                     </div>
                 </summary>
                 <div class="test-body">
                     <div class="test-doc">Pytest item: tests/test_pytest_suite.py::test_multiline_long_text</div>
+                    <div class="structured-details">
+                        <div class="detail-row">
+                            <div class="detail-label">What was tested</div>
+                            <div class="detail-value">Translating multiline text (length 182 chars) to German (dest=&#x27;de&#x27;)</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Expected Result</div>
+                            <div class="detail-value">German translated text longer than 20 chars, not identical to English source</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">What was returned</div>
+                            <div class="detail-value">&#x27;Googletrans ist eine kostenlose und unbegrenzte Python-Bibli...&#x27; (Length: 207)</div>
+                        </div>
+                    </div>
                     <pre class="log-output">Test completed successfully.</pre>
                 </div>
             </details>
@@ -408,12 +820,26 @@
                         <span>test_invalid_language_code</span>
                     </div>
                     <div style="display: flex; align-items: center;">
-                        <span class="test-duration">0.034s</span>
+                        <span class="test-duration">0.035s</span>
                         <span class="badge passed">passed</span>
                     </div>
                 </summary>
                 <div class="test-body">
                     <div class="test-doc">Pytest item: tests/test_pytest_suite.py::test_invalid_language_code</div>
+                    <div class="structured-details">
+                        <div class="detail-row">
+                            <div class="detail-label">What was tested</div>
+                            <div class="detail-value">Translating &#x27;Hello&#x27; with invalid destination language &#x27;invalid_lang_12345&#x27;</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Expected Result</div>
+                            <div class="detail-value">ValueError raised due to invalid language code</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">What was returned</div>
+                            <div class="detail-value">Raised exception: ValueError: invalid destination language</div>
+                        </div>
+                    </div>
                     <pre class="log-output">Test completed successfully.</pre>
                 </div>
             </details>
