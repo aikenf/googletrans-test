@@ -8,6 +8,7 @@ import json
 import subprocess
 import traceback
 from datetime import datetime
+from generate_heatmap import generate_svg_heatmap
 
 def run_unittest_suite():
     # Run unittest via subprocess to extract tested, expected, returned attributes
@@ -167,6 +168,10 @@ def generate_html_report(results, output_file="public/index.html"):
 
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+    # Load history for heatmap
+    history = load_history("data/history.json")
+    heatmap_svg = generate_svg_heatmap(history)
+
     html_content = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -237,6 +242,20 @@ def generate_html_report(results, output_file="public/index.html"):
         .summary-card.failed .number {{ color: var(--badge-failed-fg); }}
         .summary-card.ratelimit .number {{ color: var(--badge-ratelimit-fg); }}
         .summary-card.total .number {{ color: var(--accent-color); }}
+
+        .heatmap-container {{
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            text-align: center;
+        }}
+        .heatmap-container svg {{
+            max-width: 100%;
+            height: auto;
+        }}
 
         .test-list {{
             display: flex;
@@ -391,6 +410,10 @@ def generate_html_report(results, output_file="public/index.html"):
             </div>
         </section>
 
+        <section class="heatmap-container">
+            {heatmap_svg}
+        </section>
+
         <main class="test-list">
 """
 
@@ -456,6 +479,41 @@ def generate_html_report(results, output_file="public/index.html"):
 
     print(f"Report generated successfully at: {output_file}")
 
+def load_history(history_file="data/history.json"):
+    if os.path.exists(history_file):
+        try:
+            with open(history_file, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"Error loading history from {history_file}: {e}")
+    return {}
+
+def update_history(results, history_file="data/history.json"):
+    history = load_history(history_file)
+
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    timestamp_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    total_tests = len(results)
+    passed_count = sum(1 for r in results if r["status"] == "passed")
+    # Both 'failed' and 'Error 429 - rate limit' count as failed tests
+    failed_count = sum(1 for r in results if r["status"] in ("failed", "Error 429 - rate limit"))
+    rate_limit_count = sum(1 for r in results if r["status"] == "Error 429 - rate limit")
+
+    history[today_str] = {
+        "timestamp": timestamp_str,
+        "total": total_tests,
+        "passed": passed_count,
+        "failed": failed_count,
+        "rate_limit": rate_limit_count
+    }
+
+    os.makedirs(os.path.dirname(history_file) or ".", exist_ok=True)
+    with open(history_file, "w", encoding="utf-8") as f:
+        json.dump(history, f, indent=2)
+
+    return history
+
 if __name__ == "__main__":
     print("Running unittest suite...")
     unittest_results = run_unittest_suite()
@@ -466,4 +524,12 @@ if __name__ == "__main__":
     print(f"Pytest completed: {len(pytest_results)} tests executed.")
 
     combined_results = unittest_results + pytest_results
+    history = update_history(combined_results, "data/history.json")
+
+    # Generate standalone SVG heatmap image
+    svg_code = generate_svg_heatmap(history)
+    with open("data/heatmap.svg", "w", encoding="utf-8") as f:
+        f.write(svg_code)
+    print("Heatmap SVG generated successfully at data/heatmap.svg")
+
     generate_html_report(combined_results, "public/index.html")
