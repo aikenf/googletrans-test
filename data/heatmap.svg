@@ -569,10 +569,10 @@
     <title>2026-10-05: No test runs</title>
   </rect>  <rect x="595" y="58" width="11" height="11" rx="2" ry="2" fill="#2d333b" stroke="#373e47" stroke-width="0.5">
     <title>2026-10-06: No test runs</title>
-  </rect>  <rect x="595" y="72" width="11" height="11" rx="2" ry="2" fill="#2d333b" stroke="#373e47" stroke-width="0.5">
-    <title>2026-10-07: No test runs</title>
-  </rect>  <rect x="595" y="86" width="11" height="11" rx="2" ry="2" fill="#d97706" stroke="#f59e0b" stroke-width="0.5">
-    <title>2026-10-08: 1 test failing (19/20 passed, 0 rate limit)</title>
+  </rect>  <rect x="595" y="72" width="11" height="11" rx="2" ry="2" fill="#2e6f40" stroke="#39d353" stroke-width="0.5">
+    <title>2026-10-07: Passed (13/13 passed)</title>
+  </rect>  <rect x="595" y="86" width="11" height="11" rx="2" ry="2" fill="#da3633" stroke="#f85149" stroke-width="0.5">
+    <title>2026-10-08: 14 tests failing (6/20 passed, 10 rate limit)</title>
   </rect>  <rect x="595" y="100" width="11" height="11" rx="2" ry="2" fill="#2d333b" stroke="#373e47" stroke-width="0.5">
     <title>2026-10-09: No test runs</title>
   </rect>  <rect x="595" y="114" width="11" height="11" rx="2" ry="2" fill="#2d333b" stroke="#373e47" stroke-width="0.5">

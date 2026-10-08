@@ -214,7 +214,7 @@
     <div class="container">
         <header>
             <h1>googletrans Test Suite Dashboard</h1>
-            <div class="subtitle">Generated on 2026-10-08 00:37:25 UTC | Version 1.0.0 | Package: googletrans 4.0.2</div>
+            <div class="subtitle">Generated on 2026-10-08 08:56:08 UTC | Version 1.0.1 | Package: googletrans 4.0.2</div>
         </header>
 
         <section class="summary-grid">
@@ -808,8 +808,8 @@
     <title>2026-10-05: No test runs</title>
   </rect>  <rect x="595" y="58" width="11" height="11" rx="2" ry="2" fill="#2d333b" stroke="#373e47" stroke-width="0.5">
     <title>2026-10-06: No test runs</title>
-  </rect>  <rect x="595" y="72" width="11" height="11" rx="2" ry="2" fill="#2d333b" stroke="#373e47" stroke-width="0.5">
-    <title>2026-10-07: No test runs</title>
+  </rect>  <rect x="595" y="72" width="11" height="11" rx="2" ry="2" fill="#2e6f40" stroke="#39d353" stroke-width="0.5">
+    <title>2026-10-07: Passed (13/13 passed)</title>
   </rect>  <rect x="595" y="86" width="11" height="11" rx="2" ry="2" fill="#da3633" stroke="#f85149" stroke-width="0.5">
     <title>2026-10-08: 14 tests failing (6/20 passed, 10 rate limit)</title>
   </rect>  <rect x="595" y="100" width="11" height="11" rx="2" ry="2" fill="#2d333b" stroke="#373e47" stroke-width="0.5">
@@ -1459,7 +1459,7 @@ AssertionError: &#x27;good morning&#x27; not found in &#x27;guten morgen&#x27;
                         <span>test_pypi_readme_korean_example</span>
                     </div>
                     <div style="display: flex; align-items: center;">
-                        <span class="test-duration">0.576s</span>
+                        <span class="test-duration">0.500s</span>
                         <span class="badge passed">passed</span>
                     </div>
                 </summary>
@@ -1490,7 +1490,7 @@ AssertionError: &#x27;good morning&#x27; not found in &#x27;guten morgen&#x27;
                         <span>test_pypi_readme_latin_example</span>
                     </div>
                     <div style="display: flex; align-items: center;">
-                        <span class="test-duration">0.420s</span>
+                        <span class="test-duration">0.314s</span>
                         <span class="badge failed">failed</span>
                     </div>
                 </summary>
@@ -1528,10 +1528,10 @@ AssertionError: &#x27;good morning&#x27; not found in &#x27;guten morgen&#x27;
             assert returned_text is not None
 &gt;           assert &quot;truth&quot; in returned_text.lower() or &quot;light&quot; in returned_text.lower()
 E           AssertionError: assert (&#x27;truth&#x27; in &#x27;veritas lux mea&#x27; or &#x27;light&#x27; in &#x27;veritas lux mea&#x27;)
-E            +  where &#x27;veritas lux mea&#x27; = &lt;built-in method lower of str object at 0x7f6ab3fd9b70&gt;()
-E            +    where &lt;built-in method lower of str object at 0x7f6ab3fd9b70&gt; = &#x27;veritas lux mea&#x27;.lower
-E            +  and   &#x27;veritas lux mea&#x27; = &lt;built-in method lower of str object at 0x7f6ab3fd9b70&gt;()
-E            +    where &lt;built-in method lower of str object at 0x7f6ab3fd9b70&gt; = &#x27;veritas lux mea&#x27;.lower
+E            +  where &#x27;veritas lux mea&#x27; = &lt;built-in method lower of str object at 0x7fd6d686dff0&gt;()
+E            +    where &lt;built-in method lower of str object at 0x7fd6d686dff0&gt; = &#x27;veritas lux mea&#x27;.lower
+E            +  and   &#x27;veritas lux mea&#x27; = &lt;built-in method lower of str object at 0x7fd6d686dff0&gt;()
+E            +    where &lt;built-in method lower of str object at 0x7fd6d686dff0&gt; = &#x27;veritas lux mea&#x27;.lower
 
 tests/test_pytest_suite.py:70: AssertionError</pre>
                 </div>
@@ -1544,7 +1544,7 @@ tests/test_pytest_suite.py:70: AssertionError</pre>
                         <span>test_simple_word_english_to_spanish</span>
                     </div>
                     <div style="display: flex; align-items: center;">
-                        <span class="test-duration">10.367s</span>
+                        <span class="test-duration">10.366s</span>
                         <span class="badge error-429---rate-limit">Error 429 - rate limit</span>
                     </div>
                 </summary>
@@ -1579,7 +1579,7 @@ tests/test_pytest_suite.py:70: AssertionError</pre>
 tests/test_pytest_suite.py:82:
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-translator = &lt;googletrans.client.Translator object at 0x7f6ab3c12540&gt;
+translator = &lt;googletrans.client.Translator object at 0x7fd6d64a2ae0&gt;
 text = &#x27;Hello&#x27;, src = &#x27;auto&#x27;, dest = &#x27;es&#x27;, expected_check = None
 
     async def handle_translation_with_check(translator, text, src=&#x27;auto&#x27;, dest=&#x27;en&#x27;, expected_check=None):
@@ -1616,7 +1616,7 @@ tests/test_pytest_suite.py:26: Failed</pre>
                         <span>test_specific_language_pair_german_to_english</span>
                     </div>
                     <div style="display: flex; align-items: center;">
-                        <span class="test-duration">0.321s</span>
+                        <span class="test-duration">0.454s</span>
                         <span class="badge failed">failed</span>
                     </div>
                 </summary>
@@ -1654,8 +1654,8 @@ tests/test_pytest_suite.py:26: Failed</pre>
             assert result.dest == &quot;en&quot;
 &gt;           assert &quot;good morning&quot; in returned_text.lower()
 E           AssertionError: assert &#x27;good morning&#x27; in &#x27;guten morgen&#x27;
-E            +  where &#x27;guten morgen&#x27; = &lt;built-in method lower of str object at 0x7f6ab3fda070&gt;()
-E            +    where &lt;built-in method lower of str object at 0x7f6ab3fda070&gt; = &#x27;Guten Morgen&#x27;.lower
+E            +  where &#x27;guten morgen&#x27; = &lt;built-in method lower of str object at 0x7fd6d686e4f0&gt;()
+E            +    where &lt;built-in method lower of str object at 0x7fd6d686e4f0&gt; = &#x27;Guten Morgen&#x27;.lower
 
 tests/test_pytest_suite.py:110: AssertionError</pre>
                 </div>
@@ -1668,7 +1668,7 @@ tests/test_pytest_suite.py:110: AssertionError</pre>
                         <span>test_language_detection</span>
                     </div>
                     <div style="display: flex; align-items: center;">
-                        <span class="test-duration">0.346s</span>
+                        <span class="test-duration">0.408s</span>
                         <span class="badge passed">passed</span>
                     </div>
                 </summary>
@@ -1699,7 +1699,7 @@ tests/test_pytest_suite.py:110: AssertionError</pre>
                         <span>test_english_to_german_as_is_check</span>
                     </div>
                     <div style="display: flex; align-items: center;">
-                        <span class="test-duration">10.280s</span>
+                        <span class="test-duration">10.493s</span>
                         <span class="badge error-429---rate-limit">Error 429 - rate limit</span>
                     </div>
                 </summary>
@@ -1736,7 +1736,7 @@ tests/test_pytest_suite.py:110: AssertionError</pre>
 tests/test_pytest_suite.py:147:
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-translator = &lt;googletrans.client.Translator object at 0x7f6ab3c52c90&gt;
+translator = &lt;googletrans.client.Translator object at 0x7fd6d64f6ea0&gt;
 text = &#x27;The quick brown fox jumps over the lazy dog.&#x27;, src = &#x27;auto&#x27;, dest = &#x27;de&#x27;
 expected_check = None
 
@@ -1774,7 +1774,7 @@ tests/test_pytest_suite.py:26: Failed</pre>
                         <span>test_batch_translation</span>
                     </div>
                     <div style="display: flex; align-items: center;">
-                        <span class="test-duration">10.766s</span>
+                        <span class="test-duration">10.797s</span>
                         <span class="badge error-429---rate-limit">Error 429 - rate limit</span>
                     </div>
                 </summary>
@@ -1826,7 +1826,7 @@ tests/test_pytest_suite.py:175: Failed</pre>
                         <span>test_special_characters_and_formatting</span>
                     </div>
                     <div style="display: flex; align-items: center;">
-                        <span class="test-duration">10.437s</span>
+                        <span class="test-duration">10.506s</span>
                         <span class="badge error-429---rate-limit">Error 429 - rate limit</span>
                     </div>
                 </summary>
@@ -1863,7 +1863,7 @@ tests/test_pytest_suite.py:175: Failed</pre>
 tests/test_pytest_suite.py:197:
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-translator = &lt;googletrans.client.Translator object at 0x7f6ab3c5d1c0&gt;
+translator = &lt;googletrans.client.Translator object at 0x7fd6d6509a60&gt;
 text = &#x27;Hello &lt;b&gt;world&lt;/b&gt;! Special symbols: @#$% &amp; 1234.&#x27;, src = &#x27;auto&#x27;
 dest = &#x27;es&#x27;, expected_check = None
 
@@ -1901,7 +1901,7 @@ tests/test_pytest_suite.py:26: Failed</pre>
                         <span>test_multiline_long_text</span>
                     </div>
                     <div style="display: flex; align-items: center;">
-                        <span class="test-duration">10.478s</span>
+                        <span class="test-duration">10.455s</span>
                         <span class="badge error-429---rate-limit">Error 429 - rate limit</span>
                     </div>
                 </summary>
@@ -1943,7 +1943,7 @@ tests/test_pytest_suite.py:26: Failed</pre>
 tests/test_pytest_suite.py:223:
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-translator = &lt;googletrans.client.Translator object at 0x7f6ab3c90410&gt;
+translator = &lt;googletrans.client.Translator object at 0x7fd6d65043e0&gt;
 text = &#x27;Googletrans is a free and unlimited python library that implemented Google Translate API.\nIt uses the Google Translate Ajax API to make calls to such methods as detect and translate.&#x27;
 src = &#x27;auto&#x27;, dest = &#x27;de&#x27;, expected_check = None
 
@@ -1983,7 +1983,7 @@ tests/test_pytest_suite.py:26: Failed</pre>
                         <span>test_invalid_language_code</span>
                     </div>
                     <div style="display: flex; align-items: center;">
-                        <span class="test-duration">0.037s</span>
+                        <span class="test-duration">0.046s</span>
                         <span class="badge passed">passed</span>
                     </div>
                 </summary>

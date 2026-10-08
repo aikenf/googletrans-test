@@ -7,21 +7,39 @@ def generate_heatmap_data(history, year=None):
     if year is None:
         year = datetime.datetime.now().year
 
+    # Normalize history into a dict mapping date_str -> list of run entries
+    history_by_date = {}
+    if isinstance(history, list):
+        for entry in history:
+            d_str = entry.get("date")
+            if not d_str and "timestamp" in entry:
+                d_str = entry["timestamp"].split(" ")[0]
+            if d_str:
+                history_by_date.setdefault(d_str, []).append(entry)
+    elif isinstance(history, dict):
+        for k, v in history.items():
+            if isinstance(v, list):
+                history_by_date[k] = v
+            else:
+                entry = {"date": k}
+                entry.update(v)
+                history_by_date[k] = [entry]
+
     start_date = datetime.date(year, 1, 1)
     end_date = datetime.date(year, 12, 31)
-
-    # Determine calendar grid layout
-    # Sunday = 0, Monday = 1, ..., Saturday = 6 (or Monday = 0..Sunday = 6)
-    # GitHub standard: Sunday is row 0, Saturday is row 6 (or Monday row 0..Sunday row 6)
-    # Let's use standard GitHub layout: Sunday (0) to Saturday (6).
-    # python weekday(): Monday=0, Tuesday=1 ... Sunday=6
-    # To map to Sunday=0: (dt.weekday() + 1) % 7
 
     days_data = []
     curr = start_date
     while curr <= end_date:
         date_str = curr.strftime("%Y-%m-%d")
-        record = history.get(date_str)
+        runs = history_by_date.get(date_str, [])
+
+        # Select the worst result for dates with multiple runs
+        if runs:
+            # Worst result ranking: max failed count, then min passed count
+            record = max(runs, key=lambda x: (x.get("failed", 0), -x.get("passed", 0)))
+        else:
+            record = None
 
         # Status & Color logic:
         # Gray: not run
