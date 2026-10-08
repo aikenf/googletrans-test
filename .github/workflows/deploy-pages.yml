@@ -1,6 +1,8 @@
 name: Deploy Test Report to GitHub Pages
 
 on:
+  schedule:
+    - cron: '13 3 * * *'
   push:
     branches:
       - main
@@ -8,7 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -40,6 +42,16 @@ jobs:
       - name: Run Tests and Generate Report
         run: |
           python generate_report.py
+
+      - name: Commit and Push Updated Test History
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/history.json data/heatmap.svg README.md
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: update test history and heatmap [skip ci]"
+            git push
+          fi
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
