@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-10-08
+
+### Changed
+- **Appending History File Format:** Converted `data/history.json` to a growing JSON list of execution records instead of overwriting history on each test run.
+- **Trigger Type Classification:** Added explicit `trigger` attribute ("scheduled" vs "manually triggered") to history run records.
+- **Heatmap Multi-Run Selection Logic:** Updated `generate_heatmap.py` to process list-based history records and select the worst result (highest failure count / lowest pass count) for dates with multiple test executions.
+- **Restored Historical Runs:** Restored the 3 historical contribution test execution records from git history.
+
 ## [1.0.0] - 2026-10-07
 
 ### Added

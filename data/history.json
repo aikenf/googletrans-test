@@ -1,9 +1,38 @@
-{
-  "2026-10-08": {
+[
+  {
+    "date": "2026-10-07",
+    "timestamp": "2026-10-07 18:02:53",
+    "total": 13,
+    "passed": 13,
+    "failed": 0,
+    "rate_limit": 0,
+    "trigger": "manually triggered"
+  },
+  {
+    "date": "2026-10-08",
+    "timestamp": "2026-10-08 00:37:25",
+    "total": 20,
+    "passed": 6,
+    "failed": 14,
+    "rate_limit": 10,
+    "trigger": "manually triggered"
+  },
+  {
+    "date": "2026-10-08",
     "timestamp": "2026-10-08 03:29:33",
     "total": 20,
     "passed": 19,
     "failed": 1,
-    "rate_limit": 0
+    "rate_limit": 0,
+    "trigger": "scheduled"
+  },
+  {
+    "date": "2026-10-08",
+    "timestamp": "2026-10-08 08:56:08",
+    "total": 20,
+    "passed": 6,
+    "failed": 14,
+    "rate_limit": 10,
+    "trigger": "manually triggered"
   }
-}
+]

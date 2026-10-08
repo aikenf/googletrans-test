@@ -388,7 +388,7 @@ def generate_html_report(results, output_file="public/index.html"):
     <div class="container">
         <header>
             <h1>googletrans Test Suite Dashboard</h1>
-            <div class="subtitle">Generated on {now_str} UTC | Version 1.0.0 | Package: googletrans 4.0.2</div>
+            <div class="subtitle">Generated on {now_str} UTC | Version 1.0.1 | Package: googletrans 4.0.2</div>
         </header>
 
         <section class="summary-grid">
@@ -483,10 +483,22 @@ def load_history(history_file="data/history.json"):
     if os.path.exists(history_file):
         try:
             with open(history_file, "r", encoding="utf-8") as f:
-                return json.load(f)
+                data = json.load(f)
+                if isinstance(data, list):
+                    return data
+                elif isinstance(data, dict):
+                    # Migration fallback from legacy dict format
+                    list_data = []
+                    for k, v in data.items():
+                        entry = {"date": k}
+                        entry.update(v)
+                        if "trigger" not in entry:
+                            entry["trigger"] = "manually triggered"
+                        list_data.append(entry)
+                    return list_data
         except Exception as e:
             print(f"Error loading history from {history_file}: {e}")
-    return {}
+    return []
 
 def update_history(results, history_file="data/history.json"):
     history = load_history(history_file)
@@ -500,13 +512,20 @@ def update_history(results, history_file="data/history.json"):
     failed_count = sum(1 for r in results if r["status"] in ("failed", "Error 429 - rate limit"))
     rate_limit_count = sum(1 for r in results if r["status"] == "Error 429 - rate limit")
 
-    history[today_str] = {
+    event_name = os.environ.get("GITHUB_EVENT_NAME", "").lower()
+    trigger = "scheduled" if event_name == "schedule" else "manually triggered"
+
+    new_entry = {
+        "date": today_str,
         "timestamp": timestamp_str,
         "total": total_tests,
         "passed": passed_count,
         "failed": failed_count,
-        "rate_limit": rate_limit_count
+        "rate_limit": rate_limit_count,
+        "trigger": trigger
     }
+
+    history.append(new_entry)
 
     os.makedirs(os.path.dirname(history_file) or ".", exist_ok=True)
     with open(history_file, "w", encoding="utf-8") as f:

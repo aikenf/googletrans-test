@@ -9,7 +9,7 @@ A comprehensive test suite and dashboard for validating the [`googletrans`](http
 This repository provides:
 1. **Independent Test Suites:** Runs test cases using both `pytest` and Python's built-in `unittest` framework.
 2. **Interactive HTML Test Dashboard:** Automatically runs both test suites and produces a styled, searchable `index.html` report with collapsible test details and clear status badges (e.g., `passed`, `failed`, `Error 429 - rate limit`).
-3. **Daily Automated Testing & Heatmap Tracking:** Scheduled daily execution at 3:13 UTC with persistent test results stored in `data/history.json` and a GitHub contribution-style heatmap visualization.
+3. **Daily Automated Testing & Heatmap Tracking:** Scheduled daily execution at 3:13 UTC with persistent test results stored as an appending list in `data/history.json` and a GitHub contribution-style heatmap visualization (selecting the worst result for dates with multiple runs).
 4. **Automated GitHub Pages Deployment:** Continuous integration via GitHub Actions deploys the test dashboard to GitHub Pages on every push and daily schedule.
 
 ## Daily Test Execution Heatmap
