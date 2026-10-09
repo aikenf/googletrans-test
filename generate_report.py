@@ -158,19 +158,83 @@ print(json.dumps(collector.test_results))
         print("Pytest stdout error:", stdout, res.stderr)
         return []
 
-def generate_html_report(results, output_file="public/index.html"):
-    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+def load_history(history_file="data/history.json"):
+    if os.path.exists(history_file):
+        try:
+            with open(history_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if isinstance(data, list):
+                    return data
+                elif isinstance(data, dict):
+                    # Migration fallback from legacy dict format
+                    list_data = []
+                    for k, v in data.items():
+                        entry = {"date": k}
+                        entry.update(v)
+                        if "trigger" not in entry:
+                            entry["trigger"] = "manually triggered"
+                        list_data.append(entry)
+                    return list_data
+        except Exception as e:
+            print(f"Error loading history from {history_file}: {e}")
+    return []
+
+def update_history(results, history_file="data/history.json"):
+    history = load_history(history_file)
+
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    timestamp_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     total_tests = len(results)
     passed_count = sum(1 for r in results if r["status"] == "passed")
-    failed_count = sum(1 for r in results if r["status"] == "failed")
+    # Both 'failed' and 'Error 429 - rate limit' count as failed tests
+    failed_count = sum(1 for r in results if r["status"] in ("failed", "Error 429 - rate limit"))
     rate_limit_count = sum(1 for r in results if r["status"] == "Error 429 - rate limit")
 
-    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    event_name = os.environ.get("GITHUB_EVENT_NAME", "").lower()
+    trigger = "scheduled" if event_name == "schedule" else "manually triggered"
 
-    # Load history for heatmap
-    history = load_history("data/history.json")
+    new_entry = {
+        "date": today_str,
+        "timestamp": timestamp_str,
+        "total": total_tests,
+        "passed": passed_count,
+        "failed": failed_count,
+        "rate_limit": rate_limit_count,
+        "trigger": trigger,
+        "results": results
+    }
+
+    history.append(new_entry)
+
+    os.makedirs(os.path.dirname(history_file) or ".", exist_ok=True)
+    with open(history_file, "w", encoding="utf-8") as f:
+        json.dump(history, f, indent=2)
+
+    return history
+
+def generate_html_report(results, history, output_file="public/index.html"):
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+
+    total_runs_count = len(history)
+    latest_run = history[-1] if history else {
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "total": len(results),
+        "passed": sum(1 for r in results if r["status"] == "passed"),
+        "failed": sum(1 for r in results if r["status"] in ("failed", "Error 429 - rate limit")),
+        "rate_limit": sum(1 for r in results if r["status"] == "Error 429 - rate limit"),
+        "trigger": "manually triggered",
+        "results": results
+    }
+
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     heatmap_svg = generate_svg_heatmap(history)
+
+    # 5 Most Recent Runs
+    recent_5_runs = list(reversed(history[-5:]))
+
+    # Serialize history to JSON string safely for embedding in JS
+    history_json_str = json.dumps(history)
 
     html_content = f"""<!DOCTYPE html>
 <html lang="en">
@@ -182,6 +246,7 @@ def generate_html_report(results, output_file="public/index.html"):
         :root {{
             --bg-color: #0f172a;
             --card-bg: #1e293b;
+            --card-hover: #334155;
             --border-color: #334155;
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
@@ -222,7 +287,7 @@ def generate_html_report(results, output_file="public/index.html"):
         }}
         .summary-grid {{
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 1rem;
             margin-bottom: 2rem;
         }}
@@ -242,6 +307,7 @@ def generate_html_report(results, output_file="public/index.html"):
         .summary-card.failed .number {{ color: var(--badge-failed-fg); }}
         .summary-card.ratelimit .number {{ color: var(--badge-ratelimit-fg); }}
         .summary-card.total .number {{ color: var(--accent-color); }}
+        .summary-card.total-runs .number {{ color: #a855f7; }}
 
         .heatmap-container {{
             background-color: var(--card-bg);
@@ -253,8 +319,101 @@ def generate_html_report(results, output_file="public/index.html"):
             text-align: center;
         }}
         .heatmap-container svg {{
-            max-width: 100%;
+            width: 100%;
             height: auto;
+        }}
+
+        .section-title {{
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }}
+
+        .recent-runs-container {{
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }}
+        .run-card {{
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }}
+        .run-card:hover, .run-card.selected {{
+            border-color: var(--accent-color);
+            background-color: #1e293b;
+        }}
+        .run-card.selected {{
+            background-color: #334155;
+        }}
+        .run-info {{
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }}
+        .run-timestamp {{
+            font-weight: 600;
+            font-size: 1rem;
+        }}
+        .run-trigger {{
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: capitalize;
+        }}
+        .run-stats {{
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }}
+        .stat-chip {{
+            font-size: 0.825rem;
+            font-weight: 600;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+        }}
+        .stat-chip.passed {{ background-color: var(--badge-passed-bg); color: var(--badge-passed-fg); }}
+        .stat-chip.failed {{ background-color: var(--badge-failed-bg); color: var(--badge-failed-fg); }}
+        .stat-chip.ratelimit {{ background-color: var(--badge-ratelimit-bg); color: var(--badge-ratelimit-fg); }}
+
+        .selector-container {{
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }}
+        .selector-container label {{
+            font-weight: 600;
+            font-size: 1rem;
+            white-space: nowrap;
+        }}
+        .selector-container select {{
+            width: 100%;
+            background-color: #0f172a;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.6rem 1rem;
+            font-size: 0.95rem;
+            outline: none;
+            cursor: pointer;
+        }}
+        .selector-container select:focus {{
+            border-color: var(--accent-color);
         }}
 
         .test-list {{
@@ -374,6 +533,14 @@ def generate_html_report(results, output_file="public/index.html"):
             margin: 0;
             border: 1px solid #1e293b;
         }}
+        .no-details-msg {{
+            background-color: var(--card-bg);
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+        }}
         footer {{
             margin-top: 3rem;
             text-align: center;
@@ -394,19 +561,23 @@ def generate_html_report(results, output_file="public/index.html"):
         <section class="summary-grid">
             <div class="summary-card total">
                 <div>Total Tests</div>
-                <div class="number">{total_tests}</div>
+                <div class="number" id="card-total">{latest_run.get('total', 0)}</div>
             </div>
             <div class="summary-card passed">
                 <div>Passed</div>
-                <div class="number">{passed_count}</div>
+                <div class="number" id="card-passed">{latest_run.get('passed', 0)}</div>
             </div>
             <div class="summary-card failed">
                 <div>Failed</div>
-                <div class="number">{failed_count}</div>
+                <div class="number" id="card-failed">{latest_run.get('failed', 0)}</div>
             </div>
             <div class="summary-card ratelimit">
                 <div>Rate Limited (429)</div>
-                <div class="number">{rate_limit_count}</div>
+                <div class="number" id="card-ratelimit">{latest_run.get('rate_limit', 0)}</div>
+            </div>
+            <div class="summary-card total-runs">
+                <div>Total Runs</div>
+                <div class="number">{total_runs_count}</div>
             </div>
         </section>
 
@@ -414,62 +585,212 @@ def generate_html_report(results, output_file="public/index.html"):
             {heatmap_svg}
         </section>
 
-        <main class="test-list">
+        <div class="section-title">5 Last Test Suite Runs</div>
+        <section class="recent-runs-container">
 """
 
-    for item in results:
-        status_slug = item["status"].lower().replace(" ", "-")
-        badge_class = f"badge {status_slug}"
-        safe_name = html.escape(item["name"])
-        safe_doc = html.escape(item.get("doc", ""))
-        safe_tested = html.escape(str(item.get("tested", "N/A")))
-        safe_expected = html.escape(str(item.get("expected", "N/A")))
-        safe_returned = html.escape(str(item.get("returned", "N/A")))
-        safe_details = html.escape(item.get("details", ""))
-        suite_name = html.escape(item["suite"])
-        duration = item["duration"]
-        status_text = html.escape(item["status"])
+    for idx, r in enumerate(recent_5_runs):
+        run_idx_in_history = len(history) - 1 - idx
+        t_stamp = html.escape(r.get("timestamp", r.get("date", "Unknown")))
+        trig = html.escape(r.get("trigger", "manually triggered"))
+        p_cnt = r.get("passed", 0)
+        f_cnt = r.get("failed", 0)
+        rl_cnt = r.get("rate_limit", 0)
 
         html_content += f"""
-            <details class="test-card">
-                <summary class="test-header">
-                    <div class="test-title">
-                        <span class="suite-tag">{suite_name}</span>
-                        <span>{safe_name}</span>
-                    </div>
-                    <div style="display: flex; align-items: center;">
-                        <span class="test-duration">{duration}</span>
-                        <span class="{badge_class}">{status_text}</span>
-                    </div>
-                </summary>
-                <div class="test-body">
-                    {f'<div class="test-doc">{safe_doc}</div>' if safe_doc else ''}
-                    <div class="structured-details">
-                        <div class="detail-row">
-                            <div class="detail-label">What was tested</div>
-                            <div class="detail-value">{safe_tested}</div>
-                        </div>
-                        <div class="detail-row">
-                            <div class="detail-label">Expected Result</div>
-                            <div class="detail-value">{safe_expected}</div>
-                        </div>
-                        <div class="detail-row">
-                            <div class="detail-label">What was returned</div>
-                            <div class="detail-value">{safe_returned}</div>
-                        </div>
-                    </div>
-                    <pre class="log-output">{safe_details}</pre>
+            <div class="run-card" data-run-idx="{run_idx_in_history}">
+                <div class="run-info">
+                    <span class="run-timestamp">{t_stamp}</span>
+                    <span class="run-trigger">Trigger: {trig}</span>
                 </div>
-            </details>
+                <div class="run-stats">
+                    <span class="stat-chip passed">{p_cnt} Passed</span>
+                    <span class="stat-chip failed">{f_cnt} Failed</span>
+                    <span class="stat-chip ratelimit">{rl_cnt} Rate Limited</span>
+                </div>
+            </div>
 """
 
+    html_content += f"""
+        </section>
+
+        <div class="section-title">Run Selector & Test Results</div>
+        <section class="selector-container">
+            <label for="run-select">Select Test Run:</label>
+            <select id="run-select">
+"""
+
+    for i in range(len(history) - 1, -1, -1):
+        r = history[i]
+        t_stamp = html.escape(r.get("timestamp", r.get("date", f"Run #{i+1}")))
+        trig = html.escape(r.get("trigger", ""))
+        p_cnt = r.get("passed", 0)
+        tot_cnt = r.get("total", 0)
+        sel_attr = "selected" if i == len(history) - 1 else ""
+        html_content += f'                <option value="{i}" {sel_attr}>{t_stamp} ({trig}) - {p_cnt}/{tot_cnt} passed</option>\n'
+
     html_content += """
+            </select>
+        </section>
+
+        <main id="test-results-container" class="test-list">
         </main>
 
         <footer>
             <p>Automated report generated by <code>generate_report.py</code> for GitHub Pages deployment.</p>
         </footer>
     </div>
+
+    <script>
+        const runHistory = """ + history_json_str + """;
+
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function renderRun(runIdx) {
+            const run = runHistory[runIdx];
+            if (!run) return;
+
+            // Update top cards
+            document.getElementById('card-total').textContent = run.total || 0;
+            document.getElementById('card-passed').textContent = run.passed || 0;
+            document.getElementById('card-failed').textContent = run.failed || 0;
+            document.getElementById('card-ratelimit').textContent = run.rate_limit || 0;
+
+            // Update selector
+            const selectEl = document.getElementById('run-select');
+            if (selectEl) selectEl.value = runIdx;
+
+            // Update selected class on 5 last runs cards
+            document.querySelectorAll('.run-card').forEach(card => {
+                if (parseInt(card.getAttribute('data-run-idx'), 10) === runIdx) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
+
+            // Render test results list
+            const container = document.getElementById('test-results-container');
+            const results = run.results;
+
+            if (!results || results.length === 0) {
+                container.innerHTML = `
+                    <div class="no-details-msg">
+                        <h3>Detailed test logs not captured for this historical run</h3>
+                        <p>Summary: ${run.passed || 0} passed, ${run.failed || 0} failed (${run.rate_limit || 0} rate limited) out of ${run.total || 0} total tests.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            results.forEach(item => {
+                const statusSlug = (item.status || 'passed').toLowerCase().replace(/\\s+/g, '-');
+                const badgeClass = 'badge ' + statusSlug;
+                const safeName = escapeHtml(item.name);
+                const safeDoc = escapeHtml(item.doc || '');
+                const safeTested = escapeHtml(item.tested || 'N/A');
+                const safeExpected = escapeHtml(item.expected || 'N/A');
+                const safeReturned = escapeHtml(item.returned || 'N/A');
+                const safeDetails = escapeHtml(item.details || '');
+                const suiteName = escapeHtml(item.suite || 'test');
+                const duration = escapeHtml(item.duration || '0.000s');
+                const statusText = escapeHtml(item.status || 'passed');
+
+                html += `
+                    <details class="test-card">
+                        <summary class="test-header">
+                            <div class="test-title">
+                                <span class="suite-tag">${suiteName}</span>
+                                <span>${safeName}</span>
+                            </div>
+                            <div style="display: flex; align-items: center;">
+                                <span class="test-duration">${duration}</span>
+                                <span class="${badgeClass}">${statusText}</span>
+                            </div>
+                        </summary>
+                        <div class="test-body">
+                            ${safeDoc ? `<div class="test-doc">${safeDoc}</div>` : ''}
+                            <div class="structured-details">
+                                <div class="detail-row">
+                                    <div class="detail-label">What was tested</div>
+                                    <div class="detail-value">${safeTested}</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Expected Result</div>
+                                    <div class="detail-value">${safeExpected}</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">What was returned</div>
+                                    <div class="detail-value">${safeReturned}</div>
+                                </div>
+                            </div>
+                            <pre class="log-output">${safeDetails}</pre>
+                        </div>
+                    </details>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // Setup event handlers
+        document.addEventListener('DOMContentLoaded', () => {
+            const initialIdx = runHistory.length - 1;
+            renderRun(initialIdx);
+
+            // Select change handler
+            document.getElementById('run-select').addEventListener('change', (e) => {
+                renderRun(parseInt(e.target.value, 10));
+            });
+
+            // 5 last runs cards click handler
+            document.querySelectorAll('.run-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const idx = parseInt(card.getAttribute('data-run-idx'), 10);
+                    renderRun(idx);
+                });
+            });
+
+            // Heatmap cell click handler
+            document.querySelectorAll('.heatmap-cell').forEach(cell => {
+                cell.addEventListener('click', () => {
+                    const dateStr = cell.getAttribute('data-date');
+                    const hasRuns = cell.getAttribute('data-has-runs') === 'true';
+                    if (!hasRuns || !dateStr) return;
+
+                    // Find worst run on dateStr
+                    let worstIdx = -1;
+                    let maxFailed = -1;
+                    let minPassed = Infinity;
+
+                    runHistory.forEach((run, idx) => {
+                        const rDate = run.date || (run.timestamp ? run.timestamp.split(' ')[0] : '');
+                        if (rDate === dateStr) {
+                            const failed = run.failed || 0;
+                            const passed = run.passed || 0;
+                            if (failed > maxFailed || (failed === maxFailed && passed < minPassed)) {
+                                maxFailed = failed;
+                                minPassed = passed;
+                                worstIdx = idx;
+                            }
+                        }
+                    });
+
+                    if (worstIdx !== -1) {
+                        renderRun(worstIdx);
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
 """
@@ -478,60 +799,6 @@ def generate_html_report(results, output_file="public/index.html"):
         f.write(html_content)
 
     print(f"Report generated successfully at: {output_file}")
-
-def load_history(history_file="data/history.json"):
-    if os.path.exists(history_file):
-        try:
-            with open(history_file, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                if isinstance(data, list):
-                    return data
-                elif isinstance(data, dict):
-                    # Migration fallback from legacy dict format
-                    list_data = []
-                    for k, v in data.items():
-                        entry = {"date": k}
-                        entry.update(v)
-                        if "trigger" not in entry:
-                            entry["trigger"] = "manually triggered"
-                        list_data.append(entry)
-                    return list_data
-        except Exception as e:
-            print(f"Error loading history from {history_file}: {e}")
-    return []
-
-def update_history(results, history_file="data/history.json"):
-    history = load_history(history_file)
-
-    today_str = datetime.now().strftime("%Y-%m-%d")
-    timestamp_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-    total_tests = len(results)
-    passed_count = sum(1 for r in results if r["status"] == "passed")
-    # Both 'failed' and 'Error 429 - rate limit' count as failed tests
-    failed_count = sum(1 for r in results if r["status"] in ("failed", "Error 429 - rate limit"))
-    rate_limit_count = sum(1 for r in results if r["status"] == "Error 429 - rate limit")
-
-    event_name = os.environ.get("GITHUB_EVENT_NAME", "").lower()
-    trigger = "scheduled" if event_name == "schedule" else "manually triggered"
-
-    new_entry = {
-        "date": today_str,
-        "timestamp": timestamp_str,
-        "total": total_tests,
-        "passed": passed_count,
-        "failed": failed_count,
-        "rate_limit": rate_limit_count,
-        "trigger": trigger
-    }
-
-    history.append(new_entry)
-
-    os.makedirs(os.path.dirname(history_file) or ".", exist_ok=True)
-    with open(history_file, "w", encoding="utf-8") as f:
-        json.dump(history, f, indent=2)
-
-    return history
 
 if __name__ == "__main__":
     print("Running unittest suite...")
@@ -551,4 +818,4 @@ if __name__ == "__main__":
         f.write(svg_code)
     print("Heatmap SVG generated successfully at data/heatmap.svg")
 
-    generate_html_report(combined_results, "public/index.html")
+    generate_html_report(combined_results, history, "public/index.html")
