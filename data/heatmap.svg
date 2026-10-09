@@ -573,8 +573,8 @@
     <title>2026-10-07: Passed (13/13 passed)</title>
   </rect>  <rect x="595" y="86" width="11" height="11" rx="2" ry="2" fill="#da3633" stroke="#f85149" stroke-width="0.5">
     <title>2026-10-08: 14 tests failing (6/20 passed, 10 rate limit)</title>
-  </rect>  <rect x="595" y="100" width="11" height="11" rx="2" ry="2" fill="#2d333b" stroke="#373e47" stroke-width="0.5">
-    <title>2026-10-09: No test runs</title>
+  </rect>  <rect x="595" y="100" width="11" height="11" rx="2" ry="2" fill="#da3633" stroke="#f85149" stroke-width="0.5">
+    <title>2026-10-09: 14 tests failing (6/20 passed, 10 rate limit)</title>
   </rect>  <rect x="595" y="114" width="11" height="11" rx="2" ry="2" fill="#2d333b" stroke="#373e47" stroke-width="0.5">
     <title>2026-10-10: No test runs</title>
   </rect>  <rect x="609" y="30" width="11" height="11" rx="2" ry="2" fill="#2d333b" stroke="#373e47" stroke-width="0.5">
