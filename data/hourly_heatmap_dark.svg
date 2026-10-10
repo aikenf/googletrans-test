@@ -2531,8 +2531,8 @@
     <title>2026-10-10 10:00: 1 run | 6/20 passed (30% pass ratio), 14 failed (10 rate limited)</title>
   </rect>  <rect class="heatmap-cell" data-date="2026-10-10" data-hour="11" data-has-runs="true" x="763" y="204" width="11" height="11" rx="2" ry="2" fill="#da3633" stroke="#f85149" stroke-width="0.5">
     <title>2026-10-10 11:00: 1 run | 6/20 passed (30% pass ratio), 14 failed (10 rate limited)</title>
-  </rect>  <rect class="heatmap-cell" data-date="2026-10-10" data-hour="12" data-has-runs="false" x="763" y="218" width="11" height="11" rx="2" ry="2" fill="#2d333b" stroke="#373e47" stroke-width="0.5">
-    <title>2026-10-10 12:00: No test runs (not covered)</title>
+  </rect>  <rect class="heatmap-cell" data-date="2026-10-10" data-hour="12" data-has-runs="true" x="763" y="218" width="11" height="11" rx="2" ry="2" fill="#da3633" stroke="#f85149" stroke-width="0.5">
+    <title>2026-10-10 12:00: 1 run | 6/20 passed (30% pass ratio), 14 failed (10 rate limited)</title>
   </rect>  <rect class="heatmap-cell" data-date="2026-10-10" data-hour="13" data-has-runs="false" x="763" y="232" width="11" height="11" rx="2" ry="2" fill="#2d333b" stroke="#373e47" stroke-width="0.5">
     <title>2026-10-10 13:00: No test runs (not covered)</title>
   </rect>  <rect class="heatmap-cell" data-date="2026-10-10" data-hour="14" data-has-runs="true" x="763" y="246" width="11" height="11" rx="2" ry="2" fill="#da3633" stroke="#f85149" stroke-width="0.5">
