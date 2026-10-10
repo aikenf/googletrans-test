@@ -6,6 +6,13 @@
     .legend-text { fill: #8b949e; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }
     .heatmap-cell { cursor: pointer; transition: transform 0.1s; }
     .heatmap-cell:hover { stroke: #ffffff; stroke-width: 1.5px; }
+    @media (prefers-color-scheme: light) {
+      .bg { fill: #ffffff; }
+      .title { fill: #1f2328; }
+      .month-label, .day-label, .legend-text { fill: #656d76; }
+      .heatmap-cell:hover { stroke: #1f2328; }
+      rect[fill="#2d333b"] { fill: #ebedf0; stroke: #d0d7de; }
+    }
   </style>
   <rect width="100%" height="100%" class="bg" />
   <text x="35" y="22" class="title">Hourly Test Execution Heatmap (Past 53 Days)</text>
@@ -2539,8 +2546,8 @@
     <title>2026-10-10 14:00: 1 run | 6/20 passed (30% pass ratio), 14 failed (10 rate limited)</title>
   </rect>  <rect class="heatmap-cell" data-date="2026-10-10" data-hour="15" data-has-runs="false" x="763" y="260" width="11" height="11" rx="2" ry="2" fill="#2d333b" stroke="#373e47" stroke-width="0.5">
     <title>2026-10-10 15:00: No test runs (not covered)</title>
-  </rect>  <rect class="heatmap-cell" data-date="2026-10-10" data-hour="16" data-has-runs="false" x="763" y="274" width="11" height="11" rx="2" ry="2" fill="#2d333b" stroke="#373e47" stroke-width="0.5">
-    <title>2026-10-10 16:00: No test runs (not covered)</title>
+  </rect>  <rect class="heatmap-cell" data-date="2026-10-10" data-hour="16" data-has-runs="true" x="763" y="274" width="11" height="11" rx="2" ry="2" fill="#2e6f40" stroke="#39d353" stroke-width="0.5">
+    <title>2026-10-10 16:00: 1 run | 20/20 passed (100% pass ratio)</title>
   </rect>  <rect class="heatmap-cell" data-date="2026-10-10" data-hour="17" data-has-runs="false" x="763" y="288" width="11" height="11" rx="2" ry="2" fill="#2d333b" stroke="#373e47" stroke-width="0.5">
     <title>2026-10-10 17:00: No test runs (not covered)</title>
   </rect>  <rect class="heatmap-cell" data-date="2026-10-10" data-hour="18" data-has-runs="false" x="763" y="302" width="11" height="11" rx="2" ry="2" fill="#2d333b" stroke="#373e47" stroke-width="0.5">

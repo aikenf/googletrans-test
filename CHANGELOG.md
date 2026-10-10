@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.5] - 2026-10-10
+
+### Added
+- **Light Theme & Interactive UI Theme Switch:** Introduced a polished light theme alongside the default dark theme in the web test dashboard (`public/index.html` via `generate_report.py`).
+- **Header Theme Toggle Button:** Added a header toggle button featuring SVG sun/moon icons and current mode indicator to switch smoothly between Dark and Light modes.
+- **Theme Persistence & Auto Detection:** Implemented `localStorage` theme preference caching and an inline anti-flicker script in the document `<head>` that automatically honors system `prefers-color-scheme` settings while persisting manual user choices across sessions.
+- **Adaptive Light Theme Heatmaps:** Added light-theme style overrides for inline daily and hourly SVG heatmaps in the dashboard and embedded `@media (prefers-color-scheme: light)` rules inside `generate_heatmap.py` for standalone SVG rendering.
+
 ## [1.0.4] - 2026-10-10
 
 ### Added

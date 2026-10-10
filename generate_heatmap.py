@@ -183,6 +183,13 @@ def generate_svg_heatmap(history, year=None):
     .legend-text {{ fill: #8b949e; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }}
     .heatmap-cell {{ cursor: pointer; transition: transform 0.1s; }}
     .heatmap-cell:hover {{ stroke: #ffffff; stroke-width: 1.5px; }}
+    @media (prefers-color-scheme: light) {{
+      .bg {{ fill: #ffffff; }}
+      .title {{ fill: #1f2328; }}
+      .month-label, .day-label, .legend-text {{ fill: #656d76; }}
+      .heatmap-cell:hover {{ stroke: #1f2328; }}
+      rect[fill="#2d333b"] {{ fill: #ebedf0; stroke: #d0d7de; }}
+    }}
   </style>
   <rect width="100%" height="100%" class="bg" />
   <text x="{left_padding}" y="22" class="title">Test Suite Execution Heatmap ({year})</text>
@@ -406,6 +413,13 @@ def generate_hourly_svg_heatmap(history, end_date=None, num_days=53):
     .legend-text {{ fill: #8b949e; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }}
     .heatmap-cell {{ cursor: pointer; transition: transform 0.1s; }}
     .heatmap-cell:hover {{ stroke: #ffffff; stroke-width: 1.5px; }}
+    @media (prefers-color-scheme: light) {{
+      .bg {{ fill: #ffffff; }}
+      .title {{ fill: #1f2328; }}
+      .month-label, .day-label, .legend-text {{ fill: #656d76; }}
+      .heatmap-cell:hover {{ stroke: #1f2328; }}
+      rect[fill="#2d333b"] {{ fill: #ebedf0; stroke: #d0d7de; }}
+    }}
   </style>
   <rect width="100%" height="100%" class="bg" />
   <text x="{left_padding}" y="22" class="title">Hourly Test Execution Heatmap (Past 53 Days)</text>

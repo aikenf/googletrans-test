@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Welcome! This repository contains test suites, custom test report generators, and CI/CD automation for validating the Python `googletrans` library (version 4.0.2) - Version 1.0.4.
+Welcome! This repository contains test suites, custom test report generators, and CI/CD automation for validating the Python `googletrans` library (version 4.0.2) - Version 1.0.5.
 
 ## Instructions for AI Agents & Developers
 

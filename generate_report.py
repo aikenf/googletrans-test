@@ -290,6 +290,16 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>googletrans Test Suite Execution Dashboard</title>
+    <script>
+        (function() {{
+            var theme = localStorage.getItem('theme');
+            if (theme === 'light' || (!theme && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)) {{
+                document.documentElement.setAttribute('data-theme', 'light');
+            }} else {{
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }}
+        }})();
+    </script>
     <style>
         :root {{
             --bg-color: #0f172a;
@@ -306,6 +316,84 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
             --badge-ratelimit-fg: #fb923c;
             --accent-color: #38bdf8;
             --field-bg: #090d16;
+            --test-body-bg: #0f172a80;
+            --select-bg: #0f172a;
+            --log-bg: #090d16;
+            --log-fg: #e2e8f0;
+            --log-border: #1e293b;
+            --log-clean-bg: #041a12;
+            --log-clean-fg: #86efac;
+            --log-clean-border: #064e3b;
+            --subtext-bg: rgba(255, 255, 255, 0.05);
+            --subtext-color: #94a3b8;
+            --total-runs-num: #c084fc;
+            --total-runs-subtext-bg: rgba(192, 132, 252, 0.15);
+            --total-runs-subtext-fg: #d8b4fe;
+            --version-pill-bg: #3b82f620;
+            --version-pill-fg: #60a5fa;
+            --version-pill-border: #3b82f640;
+            --suite-tag-bg: #334155;
+            --suite-tag-fg: #cbd5e1;
+            --diagnostic-passed-bg: #064e3b40;
+            --diagnostic-passed-fg: #34d399;
+            --diagnostic-passed-border: #05966950;
+            --diagnostic-failed-bg: #7f1d1d40;
+            --diagnostic-failed-fg: #f87171;
+            --diagnostic-failed-border: #dc262650;
+            --diagnostic-ratelimit-bg: #7c2d1240;
+            --diagnostic-ratelimit-fg: #fb923c;
+            --diagnostic-ratelimit-border: #ea580c50;
+            --btn-bg: #1e293b;
+            --btn-hover: #334155;
+            --btn-border: #334155;
+            --btn-text: #f8fafc;
+        }}
+        [data-theme="light"] {{
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --card-hover: #f1f5f9;
+            --border-color: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --badge-passed-bg: #dcfce7;
+            --badge-passed-fg: #15803d;
+            --badge-failed-bg: #fee2e2;
+            --badge-failed-fg: #b91c1c;
+            --badge-ratelimit-bg: #ffedd5;
+            --badge-ratelimit-fg: #c2410c;
+            --accent-color: #0284c7;
+            --field-bg: #f8fafc;
+            --test-body-bg: #f8fafc;
+            --select-bg: #ffffff;
+            --log-bg: #f8fafc;
+            --log-fg: #1e293b;
+            --log-border: #cbd5e1;
+            --log-clean-bg: #f0fdf4;
+            --log-clean-fg: #15803d;
+            --log-clean-border: #bbf7d0;
+            --subtext-bg: rgba(0, 0, 0, 0.05);
+            --subtext-color: #64748b;
+            --total-runs-num: #7c3aed;
+            --total-runs-subtext-bg: rgba(124, 58, 237, 0.1);
+            --total-runs-subtext-fg: #6d28d9;
+            --version-pill-bg: #eff6ff;
+            --version-pill-fg: #2563eb;
+            --version-pill-border: #bfdbfe;
+            --suite-tag-bg: #e2e8f0;
+            --suite-tag-fg: #334155;
+            --diagnostic-passed-bg: #ecfdf5;
+            --diagnostic-passed-fg: #047857;
+            --diagnostic-passed-border: #a7f3d0;
+            --diagnostic-failed-bg: #fef2f2;
+            --diagnostic-failed-fg: #b91c1c;
+            --diagnostic-failed-border: #fecaca;
+            --diagnostic-ratelimit-bg: #fff7ed;
+            --diagnostic-ratelimit-fg: #c2410c;
+            --diagnostic-ratelimit-border: #fed7aa;
+            --btn-bg: #ffffff;
+            --btn-hover: #f1f5f9;
+            --btn-border: #cbd5e1;
+            --btn-text: #0f172a;
         }}
         body {{
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -314,6 +402,7 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
             margin: 0;
             padding: 2rem;
             line-height: 1.5;
+            transition: background-color 0.2s ease, color 0.2s ease;
         }}
         .container {{
             max-width: 1100px;
@@ -323,6 +412,50 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 1.5rem;
             margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }}
+        .header-info {{
+            flex: 1;
+            min-width: 280px;
+        }}
+        .theme-toggle-btn {{
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.45rem 0.95rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--btn-border);
+            background-color: var(--btn-bg);
+            color: var(--btn-text);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+            user-select: none;
+        }}
+        .theme-toggle-btn:hover {{
+            border-color: var(--accent-color);
+            background-color: var(--btn-hover);
+            transform: translateY(-1px);
+        }}
+        .theme-toggle-btn:active {{
+            transform: translateY(0);
+        }}
+        .theme-icon {{
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+        }}
+        .theme-icon svg {{
+            width: 16px;
+            height: 16px;
         }}
         h1 {{
             margin: 0 0 0.5rem 0;
@@ -338,9 +471,9 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
             font-weight: 600;
             padding: 0.2rem 0.65rem;
             border-radius: 9999px;
-            background-color: #3b82f620;
-            color: #60a5fa;
-            border: 1px solid #3b82f640;
+            background-color: var(--version-pill-bg);
+            color: var(--version-pill-fg);
+            border: 1px solid var(--version-pill-border);
             letter-spacing: 0.02em;
         }}
         .subtitle {{
@@ -386,8 +519,8 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
             color: var(--text-secondary);
             font-weight: 500;
         }}
-        .summary-card.total-runs .number {{ color: #c084fc; }}
-        .summary-card.total-runs .card-subtext {{ color: #d8b4fe; background-color: rgba(192, 132, 252, 0.15); }}
+        .summary-card.total-runs .number {{ color: var(--total-runs-num); }}
+        .summary-card.total-runs .card-subtext {{ color: var(--total-runs-subtext-fg); background-color: var(--total-runs-subtext-bg); }}
         .summary-card.total .number {{ color: var(--accent-color); }}
         .summary-card.passed .number {{ color: var(--badge-passed-fg); }}
         .summary-card.failed .number {{ color: var(--badge-failed-fg); }}
@@ -405,6 +538,24 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
         .heatmap-container svg {{
             width: 100%;
             height: auto;
+        }}
+        [data-theme="light"] .heatmap-container svg .bg {{
+            fill: #ffffff;
+        }}
+        [data-theme="light"] .heatmap-container svg .title {{
+            fill: #0f172a;
+        }}
+        [data-theme="light"] .heatmap-container svg .month-label,
+        [data-theme="light"] .heatmap-container svg .day-label,
+        [data-theme="light"] .heatmap-container svg .legend-text {{
+            fill: #64748b;
+        }}
+        [data-theme="light"] .heatmap-container svg rect[fill="#2d333b"] {{
+            fill: #ebedf0;
+            stroke: #d0d7de;
+        }}
+        [data-theme="light"] .heatmap-container svg .heatmap-cell:hover {{
+            stroke: #0f172a;
         }}
 
         .section-title {{
@@ -437,12 +588,12 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
         }}
         .run-card:hover {{
             border-color: var(--accent-color);
-            background-color: #1e293b;
+            background-color: var(--card-hover);
             transform: translateY(-2px);
         }}
         .run-card.selected {{
             border-color: var(--accent-color);
-            background-color: #1e293b;
+            background-color: var(--card-hover);
             box-shadow: 0 0 0 1px var(--accent-color);
         }}
         .run-info {{
@@ -495,7 +646,7 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
         }}
         .selector-container select {{
             width: 100%;
-            background-color: #0f172a;
+            background-color: var(--select-bg);
             color: var(--text-primary);
             border: 1px solid var(--border-color);
             border-radius: 6px;
@@ -545,8 +696,8 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
             font-size: 0.75rem;
             padding: 0.2rem 0.5rem;
             border-radius: 4px;
-            background-color: #334155;
-            color: #cbd5e1;
+            background-color: var(--suite-tag-bg);
+            color: var(--suite-tag-fg);
             text-transform: uppercase;
             font-weight: bold;
         }}
@@ -579,7 +730,7 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
         .test-body {{
             padding: 1.25rem;
             border-top: 1px solid var(--border-color);
-            background-color: #0f172a80;
+            background-color: var(--test-body-bg);
             font-size: 0.9rem;
         }}
         .test-doc {{
@@ -610,12 +761,12 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
         .detail-value {{
             font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
             font-size: 0.88rem;
-            color: #e2e8f0;
+            color: var(--text-primary);
             word-break: break-word;
         }}
         pre.log-output {{
-            background-color: #090d16;
-            color: #e2e8f0;
+            background-color: var(--log-bg);
+            color: var(--log-fg);
             padding: 1rem;
             border-radius: 6px;
             overflow-x: auto;
@@ -623,13 +774,13 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
             font-size: 0.85rem;
             white-space: pre-wrap;
             margin: 0;
-            border: 1px solid #1e293b;
+            border: 1px solid var(--log-border);
             line-height: 1.45;
         }}
         pre.log-output.clean {{
-            color: #86efac;
-            background-color: #041a12;
-            border-color: #064e3b;
+            color: var(--log-clean-fg);
+            background-color: var(--log-clean-bg);
+            border-color: var(--log-clean-border);
         }}
         .diagnostic-banner {{
             padding: 0.75rem 1rem;
@@ -642,19 +793,19 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
             gap: 0.5rem;
         }}
         .diagnostic-banner.passed {{
-            background-color: #064e3b40;
-            color: #34d399;
-            border: 1px solid #05966950;
+            background-color: var(--diagnostic-passed-bg);
+            color: var(--diagnostic-passed-fg);
+            border: 1px solid var(--diagnostic-passed-border);
         }}
         .diagnostic-banner.failed {{
-            background-color: #7f1d1d40;
-            color: #f87171;
-            border: 1px solid #dc262650;
+            background-color: var(--diagnostic-failed-bg);
+            color: var(--diagnostic-failed-fg);
+            border: 1px solid var(--diagnostic-failed-border);
         }}
         .diagnostic-banner.ratelimit {{
-            background-color: #7c2d1240;
-            color: #fb923c;
-            border: 1px solid #ea580c50;
+            background-color: var(--diagnostic-ratelimit-bg);
+            color: var(--diagnostic-ratelimit-fg);
+            border: 1px solid var(--diagnostic-ratelimit-border);
         }}
         .no-details-msg {{
             background-color: var(--card-bg);
@@ -677,8 +828,19 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
 <body>
     <div class="container">
         <header>
-            <h1>googletrans Test Suite Dashboard <span class="version-pill">v1.0.4</span></h1>
-            <div class="subtitle">Generated on {now_str} UTC | Package: googletrans 4.0.2</div>
+            <div class="header-info">
+                <h1>googletrans Test Suite Dashboard <span class="version-pill">v1.0.5</span></h1>
+                <div class="subtitle">Generated on {now_str} UTC | Package: googletrans 4.0.2</div>
+            </div>
+            <div class="header-actions">
+                <button id="theme-toggle" class="theme-toggle-btn" type="button" aria-label="Toggle color theme" title="Toggle color theme">
+                    <span class="theme-icon">
+                        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </span>
+                    <span id="theme-label">Dark</span>
+                </button>
+            </div>
         </header>
 
         <section class="summary-grid">
@@ -887,6 +1049,46 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
 
         // Setup event handlers
         document.addEventListener('DOMContentLoaded', () => {
+            // Theme toggle logic
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const sunIcon = themeToggleBtn ? themeToggleBtn.querySelector('.sun-icon') : null;
+            const moonIcon = themeToggleBtn ? themeToggleBtn.querySelector('.moon-icon') : null;
+            const themeLabel = document.getElementById('theme-label');
+
+            function updateTheme(theme) {
+                if (theme === 'light') {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    localStorage.setItem('theme', 'light');
+                    if (sunIcon) sunIcon.style.display = 'block';
+                    if (moonIcon) moonIcon.style.display = 'none';
+                    if (themeLabel) themeLabel.textContent = 'Light';
+                    if (themeToggleBtn) {
+                        themeToggleBtn.setAttribute('title', 'Switch to Dark mode');
+                        themeToggleBtn.setAttribute('aria-label', 'Switch to Dark mode');
+                    }
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                    if (sunIcon) sunIcon.style.display = 'none';
+                    if (moonIcon) moonIcon.style.display = 'block';
+                    if (themeLabel) themeLabel.textContent = 'Dark';
+                    if (themeToggleBtn) {
+                        themeToggleBtn.setAttribute('title', 'Switch to Light mode');
+                        themeToggleBtn.setAttribute('aria-label', 'Switch to Light mode');
+                    }
+                }
+            }
+
+            const activeTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+            updateTheme(activeTheme);
+
+            if (themeToggleBtn) {
+                themeToggleBtn.addEventListener('click', () => {
+                    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+                    updateTheme(currentTheme === 'light' ? 'dark' : 'light');
+                });
+            }
+
             const initialIdx = runHistory.length - 1;
             renderRun(initialIdx);
 

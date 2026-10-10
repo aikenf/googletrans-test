@@ -1198,5 +1198,236 @@
         "details": "Test completed successfully."
       }
     ]
+  },
+  {
+    "date": "2026-10-10",
+    "timestamp": "2026-10-10 16:37:33",
+    "total": 20,
+    "passed": 20,
+    "failed": 0,
+    "rate_limit": 0,
+    "trigger": "manually triggered",
+    "results": [
+      {
+        "suite": "unittest",
+        "name": "test_batch_translation",
+        "status": "passed",
+        "duration": "0.866s",
+        "doc": "Unittest (Complicated): Batch translation of multiple sentences to French.",
+        "tested": "Batch translating list: ['One', 'Two', 'Three'] to French (dest='fr')",
+        "expected": "List of 3 Translated objects with dest='fr'",
+        "returned": "List of 3 items: ['Un', 'Deux', 'Trois']",
+        "details": "Test completed successfully."
+      },
+      {
+        "suite": "unittest",
+        "name": "test_english_to_german_as_is_check",
+        "status": "passed",
+        "duration": "0.520s",
+        "doc": "Unittest (Complicated): English to German, ensuring text is not returned as-is.",
+        "tested": "Translating English sentence 'The quick brown fox jumps over the lazy dog.' to German (dest='de')",
+        "expected": "German translation distinct from English source text (e.g. 'Der schnelle braune Fuchs...')",
+        "returned": "'Der schnelle Braunfuchs springt \u00fcber den faulen Hund.'",
+        "details": "Test completed successfully."
+      },
+      {
+        "suite": "unittest",
+        "name": "test_invalid_language_code",
+        "status": "passed",
+        "duration": "0.005s",
+        "doc": "Unittest (Edge Case): Invalid destination language code raises ValueError.",
+        "tested": "Translating 'Hello' with invalid destination language 'nonexistent_lang'",
+        "expected": "ValueError raised due to invalid language code",
+        "returned": "Raised exception: ValueError: invalid destination language",
+        "details": "Test completed successfully."
+      },
+      {
+        "suite": "unittest",
+        "name": "test_language_detection",
+        "status": "passed",
+        "duration": "0.254s",
+        "doc": "Unittest: Language auto-detection for English.",
+        "tested": "Detecting language for: 'This is a test sentence in English.'",
+        "expected": "Detected language code 'en'",
+        "returned": "lang='en', confidence=1",
+        "details": "Test completed successfully."
+      },
+      {
+        "suite": "unittest",
+        "name": "test_multiline_long_text",
+        "status": "passed",
+        "duration": "0.216s",
+        "doc": "Unittest (Complicated): Multiline long text translation to German.",
+        "tested": "Translating multiline text (length 182 chars) to German (dest='de')",
+        "expected": "German translated text longer than 20 chars, not identical to English source",
+        "returned": "'Googletrans ist eine kostenlose und unbegrenzte Python-Bibli...' (Length: 207)",
+        "details": "Test completed successfully."
+      },
+      {
+        "suite": "unittest",
+        "name": "test_pypi_readme_korean_example",
+        "status": "passed",
+        "duration": "0.222s",
+        "doc": "Unittest (PyPI README Simple Example 1): Korean text translation to English.",
+        "tested": "Translating '\uc548\ub155\ud558\uc138\uc694.' to English (pypi description standard usage)",
+        "expected": "Non-empty translated text in English (e.g. 'hello' or 'hi')",
+        "returned": "'hello.' (src=ko, dest=en)",
+        "details": "Test completed successfully."
+      },
+      {
+        "suite": "unittest",
+        "name": "test_pypi_readme_latin_example",
+        "status": "passed",
+        "duration": "0.448s",
+        "doc": "Unittest (PyPI README Simple Example 2): Latin 'veritas lux mea' to English.",
+        "tested": "Translating Latin 'veritas lux mea' to English with explicit src='la'",
+        "expected": "Translated text containing 'truth' or 'light'",
+        "returned": "'truth is my light' (src=la, dest=en)",
+        "details": "Test completed successfully."
+      },
+      {
+        "suite": "unittest",
+        "name": "test_simple_translation",
+        "status": "passed",
+        "duration": "0.218s",
+        "doc": "Unittest: Simple single-word translation (English to Spanish).",
+        "tested": "Translating word 'Hello' to Spanish (dest='es')",
+        "expected": "'Hola'",
+        "returned": "'Hola' (dest=es)",
+        "details": "Test completed successfully."
+      },
+      {
+        "suite": "unittest",
+        "name": "test_special_characters",
+        "status": "passed",
+        "duration": "0.242s",
+        "doc": "Unittest (Complicated): Handling unicode, special characters, and numbers.",
+        "tested": "Translating unicode/special char text 'Pyth\u00f6n & Tr\u00e4nslat\u00efon: 100% test!' to Spanish (dest='es')",
+        "expected": "Translated text preserving '100%'",
+        "returned": "'Python y Trancelat\u00efon: \u00a1100% prueba!'",
+        "details": "Test completed successfully."
+      },
+      {
+        "suite": "unittest",
+        "name": "test_specific_language_pair",
+        "status": "passed",
+        "duration": "0.211s",
+        "doc": "Unittest: Specific language pair (German to English).",
+        "tested": "Translating German phrase 'Guten Morgen' to English (src='de', dest='en')",
+        "expected": "'Good morning'",
+        "returned": "'Good morning' (src=de, dest=en)",
+        "details": "Test completed successfully."
+      },
+      {
+        "suite": "pytest",
+        "name": "test_pypi_readme_korean_example",
+        "status": "passed",
+        "duration": "0.309s",
+        "doc": "Pytest item: tests/test_pytest_suite.py::test_pypi_readme_korean_example",
+        "tested": "Translating '\uc548\ub155\ud558\uc138\uc694.' to English (pypi description standard usage)",
+        "expected": "Non-empty translated text in English (e.g. 'hello' or 'hi')",
+        "returned": "'hello.' (src=ko, dest=en)",
+        "details": "Test completed successfully."
+      },
+      {
+        "suite": "pytest",
+        "name": "test_pypi_readme_latin_example",
+        "status": "passed",
+        "duration": "0.675s",
+        "doc": "Pytest item: tests/test_pytest_suite.py::test_pypi_readme_latin_example",
+        "tested": "Translating Latin 'veritas lux mea' to English with explicit src='la'",
+        "expected": "Translated text containing 'truth' or 'light'",
+        "returned": "'truth is my light' (src=la, dest=en)",
+        "details": "Test completed successfully."
+      },
+      {
+        "suite": "pytest",
+        "name": "test_simple_word_english_to_spanish",
+        "status": "passed",
+        "duration": "0.386s",
+        "doc": "Pytest item: tests/test_pytest_suite.py::test_simple_word_english_to_spanish",
+        "tested": "Translating word 'Hello' to Spanish (dest='es')",
+        "expected": "'Hola'",
+        "returned": "'Hola' (dest=es)",
+        "details": "Test completed successfully."
+      },
+      {
+        "suite": "pytest",
+        "name": "test_specific_language_pair_german_to_english",
+        "status": "passed",
+        "duration": "0.304s",
+        "doc": "Pytest item: tests/test_pytest_suite.py::test_specific_language_pair_german_to_english",
+        "tested": "Translating German phrase 'Guten Morgen' to English (src='de', dest='en')",
+        "expected": "'Good morning'",
+        "returned": "'Good morning' (src=de, dest=en)",
+        "details": "Test completed successfully."
+      },
+      {
+        "suite": "pytest",
+        "name": "test_language_detection",
+        "status": "passed",
+        "duration": "0.243s",
+        "doc": "Pytest item: tests/test_pytest_suite.py::test_language_detection",
+        "tested": "Detecting language for: 'This is a test sentence in English.'",
+        "expected": "Detected language code 'en'",
+        "returned": "lang='en', confidence=1",
+        "details": "Test completed successfully."
+      },
+      {
+        "suite": "pytest",
+        "name": "test_english_to_german_as_is_check",
+        "status": "passed",
+        "duration": "0.213s",
+        "doc": "Pytest item: tests/test_pytest_suite.py::test_english_to_german_as_is_check",
+        "tested": "Translating English sentence 'The quick brown fox jumps over the lazy dog.' to German (dest='de')",
+        "expected": "German translation distinct from English source text (e.g. 'Der schnelle braune Fuchs...')",
+        "returned": "'Der schnelle Braunfuchs springt \u00fcber den faulen Hund.'",
+        "details": "Test completed successfully."
+      },
+      {
+        "suite": "pytest",
+        "name": "test_batch_translation",
+        "status": "passed",
+        "duration": "0.448s",
+        "doc": "Pytest item: tests/test_pytest_suite.py::test_batch_translation",
+        "tested": "Batch translating list: ['Good morning', 'Thank you', 'Goodbye'] to Japanese (dest='ja')",
+        "expected": "List of 3 Translated objects with dest='ja'",
+        "returned": "List of 3 items: ['\u304a\u306f\u3088\u3046', '\u3042\u308a\u304c\u3068\u3046', '\u3055\u3088\u3046\u306a\u3089']",
+        "details": "Test completed successfully."
+      },
+      {
+        "suite": "pytest",
+        "name": "test_special_characters_and_formatting",
+        "status": "passed",
+        "duration": "0.582s",
+        "doc": "Pytest item: tests/test_pytest_suite.py::test_special_characters_and_formatting",
+        "tested": "Translating formatted HTML text 'Hello <b>world</b>! Special symbols: @#$% & 1234.' to Spanish (dest='es')",
+        "expected": "Translated text preserving HTML tags <b>...</b>, symbols @#$%, and numbers 1234",
+        "returned": "'\u00a1Hola <b>mundo</b>! S\u00edmbolos especiales: @#$% y 1234.'",
+        "details": "Test completed successfully."
+      },
+      {
+        "suite": "pytest",
+        "name": "test_multiline_long_text",
+        "status": "passed",
+        "duration": "0.639s",
+        "doc": "Pytest item: tests/test_pytest_suite.py::test_multiline_long_text",
+        "tested": "Translating multiline text (length 182 chars) to German (dest='de')",
+        "expected": "German translated text longer than 20 chars, not identical to English source",
+        "returned": "'Googletrans ist eine kostenlose und unbegrenzte Python-Bibli...' (Length: 207)",
+        "details": "Test completed successfully."
+      },
+      {
+        "suite": "pytest",
+        "name": "test_invalid_language_code",
+        "status": "passed",
+        "duration": "0.004s",
+        "doc": "Pytest item: tests/test_pytest_suite.py::test_invalid_language_code",
+        "tested": "Translating 'Hello' with invalid destination language 'invalid_lang_12345'",
+        "expected": "ValueError raised due to invalid language code",
+        "returned": "Raised exception: ValueError: invalid destination language",
+        "details": "Test completed successfully."
+      }
+    ]
   }
 ]
