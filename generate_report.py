@@ -8,7 +8,25 @@ import json
 import subprocess
 import traceback
 from datetime import datetime
+import re
 from generate_heatmap import generate_svg_heatmap
+
+def sanitize_details(text):
+    if not text:
+        return "Test completed successfully."
+    cleaned = text
+    # Normalize File ".../tests/..." references
+    cleaned = re.sub(r'File \"[^\"]*?[/\\\\]tests[/\\\\](test_[^\\\"]+)\"', r'File "tests/\1"', cleaned)
+    # Normalize pytest error lines like ".../tests/test_pytest_suite.py:176: Failed"
+    cleaned = re.sub(r'/[^\s:\"]+[/\\\\]tests[/\\\\](test_[^:\s\"]+)', r'tests/\1', cleaned)
+    # Generic replacement of user home directories & workspace paths
+    cleaned = re.sub(r'/(?:home|Users)/[^/\s]+/(?:[^/\s]+/)*tests/', 'tests/', cleaned)
+    cleaned = re.sub(r'/opt/hostedtoolcache/[^/\s]+/[^/\s]+/[^/\s]+/lib/[^/\s]+/', '<python-lib>/', cleaned)
+    cleaned = re.sub(r'/usr/lib/python[^/\s]+/', '<python-lib>/', cleaned)
+    cleaned = re.sub(r'/home/[^/\s]+/\.pyenv/[^/\s]+/[^/\s]+/lib/[^/\s]+/', '<python-lib>/', cleaned)
+    cleaned = re.sub(r'/app/tests/', 'tests/', cleaned)
+    cleaned = re.sub(r'/(?:home|Users)/[^/\s]+', '~', cleaned)
+    return cleaned
 
 def run_unittest_suite():
     # Run unittest via subprocess to extract tested, expected, returned attributes
@@ -177,6 +195,10 @@ def load_history(history_file="data/history.json"):
             with open(history_file, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 if isinstance(data, list):
+                    for entry in data:
+                        for r in entry.get("results", []):
+                            if "details" in r:
+                                r["details"] = sanitize_details(r["details"])
                     return data
                 elif isinstance(data, dict):
                     # Migration fallback from legacy dict format
@@ -186,6 +208,9 @@ def load_history(history_file="data/history.json"):
                         entry.update(v)
                         if "trigger" not in entry:
                             entry["trigger"] = "manually triggered"
+                        for r in entry.get("results", []):
+                            if "details" in r:
+                                r["details"] = sanitize_details(r["details"])
                         list_data.append(entry)
                     return list_data
         except Exception as e:
@@ -207,6 +232,13 @@ def update_history(results, history_file="data/history.json"):
     event_name = os.environ.get("GITHUB_EVENT_NAME", "").lower()
     trigger = "scheduled" if event_name == "schedule" else "manually triggered"
 
+    sanitized_results = []
+    for r in results:
+        r_copy = dict(r)
+        if "details" in r_copy:
+            r_copy["details"] = sanitize_details(r_copy["details"])
+        sanitized_results.append(r_copy)
+
     new_entry = {
         "date": today_str,
         "timestamp": timestamp_str,
@@ -215,7 +247,7 @@ def update_history(results, history_file="data/history.json"):
         "failed": failed_count,
         "rate_limit": rate_limit_count,
         "trigger": trigger,
-        "results": results
+        "results": sanitized_results
     }
 
     history.append(new_entry)
@@ -295,6 +327,20 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
             margin: 0 0 0.5rem 0;
             font-size: 2rem;
             color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }}
+        .version-pill {{
+            font-size: 0.95rem;
+            font-weight: 600;
+            padding: 0.2rem 0.65rem;
+            border-radius: 9999px;
+            background-color: #3b82f620;
+            color: #60a5fa;
+            border: 1px solid #3b82f640;
+            letter-spacing: 0.02em;
         }}
         .subtitle {{
             color: var(--text-secondary);
@@ -577,6 +623,37 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
             white-space: pre-wrap;
             margin: 0;
             border: 1px solid #1e293b;
+            line-height: 1.45;
+        }}
+        pre.log-output.clean {{
+            color: #86efac;
+            background-color: #041a12;
+            border-color: #064e3b;
+        }}
+        .diagnostic-banner {{
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }}
+        .diagnostic-banner.passed {{
+            background-color: #064e3b40;
+            color: #34d399;
+            border: 1px solid #05966950;
+        }}
+        .diagnostic-banner.failed {{
+            background-color: #7f1d1d40;
+            color: #f87171;
+            border: 1px solid #dc262650;
+        }}
+        .diagnostic-banner.ratelimit {{
+            background-color: #7c2d1240;
+            color: #fb923c;
+            border: 1px solid #ea580c50;
         }}
         .no-details-msg {{
             background-color: var(--card-bg);
@@ -599,8 +676,8 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
 <body>
     <div class="container">
         <header>
-            <h1>googletrans Test Suite Dashboard</h1>
-            <div class="subtitle">Generated on {now_str} UTC | Version 1.0.3 | Package: googletrans 4.0.2</div>
+            <h1>googletrans Test Suite Dashboard <span class="version-pill">v1.0.3</span></h1>
+            <div class="subtitle">Generated on {now_str} UTC | Package: googletrans 4.0.2</div>
         </header>
 
         <section class="summary-grid">
@@ -755,6 +832,17 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
                 const duration = escapeHtml(item.duration || '0.000s');
                 const statusText = escapeHtml(item.status || 'passed');
 
+                let bannerHtml = '';
+                let logClass = 'log-output';
+                if (item.status === 'passed') {
+                    bannerHtml = '<div class="diagnostic-banner passed">✓ Verification Passed: Assertion and return value matched expected criteria.</div>';
+                    logClass = 'log-output clean';
+                } else if (item.status === 'Error 429 - rate limit') {
+                    bannerHtml = '<div class="diagnostic-banner ratelimit">⚠️ Rate Limited (HTTP 429 / As-Is Fallback): Google Translate blocked or throttled this request.</div>';
+                } else {
+                    bannerHtml = '<div class="diagnostic-banner failed">✗ Test Assertion Failed: Return value did not meet expected criteria.</div>';
+                }
+
                 html += `
                     <details class="test-card">
                         <summary class="test-header">
@@ -783,7 +871,8 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
                                     <div class="detail-value">${safeReturned}</div>
                                 </div>
                             </div>
-                            <pre class="log-output">${safeDetails}</pre>
+                            ${bannerHtml}
+                            <pre class="${logClass}">${safeDetails}</pre>
                         </div>
                     </details>
                 `;
