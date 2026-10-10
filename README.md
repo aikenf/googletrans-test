@@ -14,11 +14,19 @@ This repository provides:
 
 ## Daily Test Execution Heatmap
 
-![Test Suite Execution Heatmap](data/heatmap.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="data/heatmap_dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="data/heatmap_light.svg">
+  <img alt="Test Suite Execution Heatmap" src="data/heatmap.svg">
+</picture>
 
 ## Hourly Test Execution Heatmap (Past 53 Days)
 
-![Hourly Test Execution Heatmap](data/hourly_heatmap.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="data/hourly_heatmap_dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="data/hourly_heatmap_light.svg">
+  <img alt="Hourly Test Execution Heatmap" src="data/hourly_heatmap.svg">
+</picture>
 
 ---
 
@@ -108,8 +116,12 @@ googletrans-test/
 │       ├── deploy-pages.yml  # Fast GitHub Pages deploy workflow on push
 │       └── run-tests.yml     # Scheduled hourly & manual test execution workflow
 ├── data/
-│   ├── heatmap.svg           # Rendered SVG yearly daily activity heatmap
-│   ├── hourly_heatmap.svg    # Rendered SVG past 53 days 24-hour execution matrix
+│   ├── heatmap.svg           # Rendered SVG yearly daily activity heatmap (default)
+│   ├── heatmap_dark.svg      # Rendered SVG yearly daily activity heatmap (dark theme)
+│   ├── heatmap_light.svg     # Rendered SVG yearly daily activity heatmap (light theme)
+│   ├── hourly_heatmap.svg    # Rendered SVG past 53 days 24-hour matrix (default)
+│   ├── hourly_heatmap_dark.svg   # Rendered SVG past 53 days 24-hour matrix (dark theme)
+│   ├── hourly_heatmap_light.svg  # Rendered SVG past 53 days 24-hour matrix (light theme)
 │   └── history.json          # Appending execution records history
 ├── public/
 │   └── index.html            # Generated test dashboard for GitHub Pages

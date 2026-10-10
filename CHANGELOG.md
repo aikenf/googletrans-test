@@ -11,7 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Light Theme & Interactive UI Theme Switch:** Introduced a polished light theme alongside the default dark theme in the web test dashboard (`public/index.html` via `generate_report.py`).
 - **Header Theme Toggle Button:** Added a header toggle button featuring SVG sun/moon icons and current mode indicator to switch smoothly between Dark and Light modes.
 - **Theme Persistence & Auto Detection:** Implemented `localStorage` theme preference caching and an inline anti-flicker script in the document `<head>` that automatically honors system `prefers-color-scheme` settings while persisting manual user choices across sessions.
-- **Adaptive Light Theme Heatmaps:** Added light-theme style overrides for inline daily and hourly SVG heatmaps in the dashboard and embedded `@media (prefers-color-scheme: light)` rules inside `generate_heatmap.py` for standalone SVG rendering.
+- **Dedicated Dark and Light SVG Heatmaps:** Generated distinct dark- and light-mode SVG files (`data/heatmap_dark.svg`, `data/heatmap_light.svg`, `data/hourly_heatmap_dark.svg`, `data/hourly_heatmap_light.svg`) with theme-tailored palettes, completely avoiding CSS/media query collisions and ensuring SVG heatmaps seamlessly switch between dark and light modes when toggling themes.
+- **GitHub README Picture Adaptation:** Updated `README.md` to use GitHub `<picture>` tags with `(prefers-color-scheme)` media queries for both daily and hourly heatmaps.
 
 ## [1.0.4] - 2026-10-10
 

@@ -3,7 +3,7 @@ import html
 import json
 import os
 
-def generate_heatmap_data(history, year=None):
+def generate_heatmap_data(history, year=None, theme="dark"):
     if year is None:
         year = datetime.datetime.now().year
 
@@ -50,8 +50,12 @@ def generate_heatmap_data(history, year=None):
         # Red: more than one failed
         if not record or num_runs == 0:
             status = "not_run"
-            color = "#2d333b"  # GitHub dark mode gray cell
-            border_color = "#373e47"
+            if theme == "light":
+                color = "#ebedf0"
+                border_color = "#d0d7de"
+            else:
+                color = "#2d333b"  # GitHub dark mode gray cell
+                border_color = "#373e47"
             tooltip = f"{date_str}: No test runs (not covered)"
         else:
             total = record.get("total", 0)
@@ -95,8 +99,8 @@ def generate_heatmap_data(history, year=None):
 
     return year, days_data
 
-def generate_svg_heatmap(history, year=None):
-    year, days = generate_heatmap_data(history, year)
+def generate_svg_heatmap(history, year=None, theme="dark"):
+    year, days = generate_heatmap_data(history, year, theme=theme)
 
     # Layout constants
     cell_size = 11
@@ -153,11 +157,27 @@ def generate_svg_heatmap(history, year=None):
             y = top_padding + r_idx * (cell_size + cell_gap) + 9
             day_svg_tags.append(f'  <text x="5" y="{y}" class="day-label">{label}</text>')
 
+    if theme == "light":
+        bg_fill = "#ffffff"
+        title_fill = "#1f2328"
+        label_fill = "#656d76"
+        legend_fill = "#656d76"
+        hover_stroke = "#1f2328"
+        empty_box_fill = "#ebedf0"
+        empty_box_stroke = "#d0d7de"
+    else:
+        bg_fill = "#0d1117"
+        title_fill = "#c9d1d9"
+        label_fill = "#8b949e"
+        legend_fill = "#8b949e"
+        hover_stroke = "#ffffff"
+        empty_box_fill = "#2d333b"
+        empty_box_stroke = "#373e47"
+
     # Legend items with precise spacing
-    # Box (10x10), space, label text, and gap before next item
     legend_y = svg_height - 18
     legend_items = [
-        ("#2d333b", "#373e47", "not covered"),
+        (empty_box_fill, empty_box_stroke, "not covered"),
         ("#2e6f40", "#39d353", "all passed"),
         ("#d97706", "#f59e0b", "one failed"),
         ("#da3633", "#f85149", "more than one failed")
@@ -171,25 +191,17 @@ def generate_svg_heatmap(history, year=None):
             f'<rect x="{curr_x}" y="0" width="10" height="10" rx="2" fill="{fill_c}" stroke="{stroke_c}" stroke-width="0.5" />'
             f'<text x="{curr_x + 14}" y="9" class="legend-text">{text_l}</text>'
         )
-        # 10px box + 4px gap + ~6px per char + 20px item margin
         approx_text_width = len(text_l) * 6 + 14 + 20
         curr_x += approx_text_width
 
     svg_code = f"""<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="{svg_height}" viewBox="0 0 {svg_width} {svg_height}" preserveAspectRatio="xMidYMid meet">
   <style>
-    .bg {{ fill: #0d1117; rx: 8px; }}
-    .title {{ fill: #c9d1d9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 600; }}
-    .month-label, .day-label {{ fill: #8b949e; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }}
-    .legend-text {{ fill: #8b949e; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }}
+    .bg {{ fill: {bg_fill}; rx: 8px; }}
+    .title {{ fill: {title_fill}; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 600; }}
+    .month-label, .day-label {{ fill: {label_fill}; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }}
+    .legend-text {{ fill: {legend_fill}; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }}
     .heatmap-cell {{ cursor: pointer; transition: transform 0.1s; }}
-    .heatmap-cell:hover {{ stroke: #ffffff; stroke-width: 1.5px; }}
-    @media (prefers-color-scheme: light) {{
-      .bg {{ fill: #ffffff; }}
-      .title {{ fill: #1f2328; }}
-      .month-label, .day-label, .legend-text {{ fill: #656d76; }}
-      .heatmap-cell:hover {{ stroke: #1f2328; }}
-      rect[fill="#2d333b"] {{ fill: #ebedf0; stroke: #d0d7de; }}
-    }}
+    .heatmap-cell:hover {{ stroke: {hover_stroke}; stroke-width: 1.5px; }}
   </style>
   <rect width="100%" height="100%" class="bg" />
   <text x="{left_padding}" y="22" class="title">Test Suite Execution Heatmap ({year})</text>
@@ -231,7 +243,7 @@ def _parse_entry_date_hour(entry):
     else:
         return ts, 0
 
-def generate_hourly_heatmap_data(history, end_date=None, num_days=53):
+def generate_hourly_heatmap_data(history, end_date=None, num_days=53, theme="dark"):
     # Normalize history into a dict mapping (date_str, hour) -> list of run entries
     history_by_date_hour = {}
     history_dates = []
@@ -292,8 +304,12 @@ def generate_hourly_heatmap_data(history, end_date=None, num_days=53):
 
             if not record or num_runs == 0:
                 status = "not_run"
-                color = "#2d333b"
-                border_color = "#373e47"
+                if theme == "light":
+                    color = "#ebedf0"
+                    border_color = "#d0d7de"
+                else:
+                    color = "#2d333b"
+                    border_color = "#373e47"
                 tooltip = f"{date_str} {hour_str}: No test runs (not covered)"
             else:
                 total = record.get("total", 0)
@@ -336,8 +352,8 @@ def generate_hourly_heatmap_data(history, end_date=None, num_days=53):
 
     return days_list, cells_data
 
-def generate_hourly_svg_heatmap(history, end_date=None, num_days=53):
-    days_list, cells_data = generate_hourly_heatmap_data(history, end_date, num_days)
+def generate_hourly_svg_heatmap(history, end_date=None, num_days=53, theme="dark"):
+    days_list, cells_data = generate_hourly_heatmap_data(history, end_date, num_days, theme=theme)
 
     cell_size = 11
     cell_gap = 3
@@ -386,10 +402,27 @@ def generate_hourly_svg_heatmap(history, end_date=None, num_days=53):
             f'  </rect>'
         )
 
+    if theme == "light":
+        bg_fill = "#ffffff"
+        title_fill = "#1f2328"
+        label_fill = "#656d76"
+        legend_fill = "#656d76"
+        hover_stroke = "#1f2328"
+        empty_box_fill = "#ebedf0"
+        empty_box_stroke = "#d0d7de"
+    else:
+        bg_fill = "#0d1117"
+        title_fill = "#c9d1d9"
+        label_fill = "#8b949e"
+        legend_fill = "#8b949e"
+        hover_stroke = "#ffffff"
+        empty_box_fill = "#2d333b"
+        empty_box_stroke = "#373e47"
+
     # Legend
     legend_y = svg_height - 18
     legend_items = [
-        ("#2d333b", "#373e47", "not covered"),
+        (empty_box_fill, empty_box_stroke, "not covered"),
         ("#2e6f40", "#39d353", "all passed"),
         ("#d97706", "#f59e0b", "one failed"),
         ("#da3633", "#f85149", "more than one failed")
@@ -407,19 +440,12 @@ def generate_hourly_svg_heatmap(history, end_date=None, num_days=53):
 
     svg_code = f"""<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="{svg_height}" viewBox="0 0 {svg_width} {svg_height}" preserveAspectRatio="xMidYMid meet">
   <style>
-    .bg {{ fill: #0d1117; rx: 8px; }}
-    .title {{ fill: #c9d1d9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 600; }}
-    .month-label, .day-label {{ fill: #8b949e; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 9px; }}
-    .legend-text {{ fill: #8b949e; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }}
+    .bg {{ fill: {bg_fill}; rx: 8px; }}
+    .title {{ fill: {title_fill}; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 600; }}
+    .month-label, .day-label {{ fill: {label_fill}; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 9px; }}
+    .legend-text {{ fill: {legend_fill}; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }}
     .heatmap-cell {{ cursor: pointer; transition: transform 0.1s; }}
-    .heatmap-cell:hover {{ stroke: #ffffff; stroke-width: 1.5px; }}
-    @media (prefers-color-scheme: light) {{
-      .bg {{ fill: #ffffff; }}
-      .title {{ fill: #1f2328; }}
-      .month-label, .day-label, .legend-text {{ fill: #656d76; }}
-      .heatmap-cell:hover {{ stroke: #1f2328; }}
-      rect[fill="#2d333b"] {{ fill: #ebedf0; stroke: #d0d7de; }}
-    }}
+    .heatmap-cell:hover {{ stroke: {hover_stroke}; stroke-width: 1.5px; }}
   </style>
   <rect width="100%" height="100%" class="bg" />
   <text x="{left_padding}" y="22" class="title">Hourly Test Execution Heatmap (Past 53 Days)</text>
@@ -435,15 +461,31 @@ def generate_hourly_svg_heatmap(history, end_date=None, num_days=53):
 """
     return svg_code
 
-def generate_hourly_html_heatmap(history, end_date=None, num_days=53):
-    return generate_hourly_svg_heatmap(history, end_date, num_days)
+def generate_hourly_html_heatmap(history, end_date=None, num_days=53, theme="dark"):
+    return generate_hourly_svg_heatmap(history, end_date, num_days, theme=theme)
 
 if __name__ == "__main__":
     from generate_report import load_history
     history = load_history("data/history.json")
-    with open("data/heatmap.svg", "w", encoding="utf-8") as f:
-        f.write(generate_svg_heatmap(history))
-    with open("data/hourly_heatmap.svg", "w", encoding="utf-8") as f:
-        f.write(generate_hourly_svg_heatmap(history))
-    print("Generated data/heatmap.svg and data/hourly_heatmap.svg")
 
+    dark_svg = generate_svg_heatmap(history, theme="dark")
+    hourly_dark_svg = generate_hourly_svg_heatmap(history, theme="dark")
+    light_svg = generate_svg_heatmap(history, theme="light")
+    hourly_light_svg = generate_hourly_svg_heatmap(history, theme="light")
+
+    with open("data/heatmap_dark.svg", "w", encoding="utf-8") as f:
+        f.write(dark_svg)
+    with open("data/hourly_heatmap_dark.svg", "w", encoding="utf-8") as f:
+        f.write(hourly_dark_svg)
+
+    with open("data/heatmap_light.svg", "w", encoding="utf-8") as f:
+        f.write(light_svg)
+    with open("data/hourly_heatmap_light.svg", "w", encoding="utf-8") as f:
+        f.write(hourly_light_svg)
+
+    with open("data/heatmap.svg", "w", encoding="utf-8") as f:
+        f.write(dark_svg)
+    with open("data/hourly_heatmap.svg", "w", encoding="utf-8") as f:
+        f.write(hourly_dark_svg)
+
+    print("Generated data/heatmap_dark.svg, data/heatmap_light.svg, data/hourly_heatmap_dark.svg, data/hourly_heatmap_light.svg, data/heatmap.svg, and data/hourly_heatmap.svg")

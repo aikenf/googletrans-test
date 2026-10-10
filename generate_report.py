@@ -275,8 +275,10 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
     }
 
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    heatmap_svg = generate_svg_heatmap(history)
-    hourly_heatmap_svg = generate_hourly_svg_heatmap(history)
+    heatmap_dark_svg = generate_svg_heatmap(history, theme="dark")
+    heatmap_light_svg = generate_svg_heatmap(history, theme="light")
+    hourly_heatmap_dark_svg = generate_hourly_svg_heatmap(history, theme="dark")
+    hourly_heatmap_light_svg = generate_hourly_svg_heatmap(history, theme="light")
 
     # 5 Most Recent Runs
     recent_5_runs = list(reversed(history[-5:]))
@@ -539,23 +541,19 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
             width: 100%;
             height: auto;
         }}
-        [data-theme="light"] .heatmap-container svg .bg {{
-            fill: #ffffff;
+        :root:not([data-theme="light"]) .heatmap-light,
+        [data-theme="dark"] .heatmap-light {{
+            display: none !important;
         }}
-        [data-theme="light"] .heatmap-container svg .title {{
-            fill: #0f172a;
+        :root:not([data-theme="light"]) .heatmap-dark,
+        [data-theme="dark"] .heatmap-dark {{
+            display: block !important;
         }}
-        [data-theme="light"] .heatmap-container svg .month-label,
-        [data-theme="light"] .heatmap-container svg .day-label,
-        [data-theme="light"] .heatmap-container svg .legend-text {{
-            fill: #64748b;
+        [data-theme="light"] .heatmap-dark {{
+            display: none !important;
         }}
-        [data-theme="light"] .heatmap-container svg rect[fill="#2d333b"] {{
-            fill: #ebedf0;
-            stroke: #d0d7de;
-        }}
-        [data-theme="light"] .heatmap-container svg .heatmap-cell:hover {{
-            stroke: #0f172a;
+        [data-theme="light"] .heatmap-light {{
+            display: block !important;
         }}
 
         .section-title {{
@@ -871,12 +869,18 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
             </div>
         </section>
 
-        <section class="heatmap-container">
-            {heatmap_svg}
+        <section class="heatmap-container heatmap-dark">
+            {heatmap_dark_svg}
+        </section>
+        <section class="heatmap-container heatmap-light">
+            {heatmap_light_svg}
         </section>
 
-        <section class="heatmap-container">
-            {hourly_heatmap_svg}
+        <section class="heatmap-container heatmap-dark">
+            {hourly_heatmap_dark_svg}
+        </section>
+        <section class="heatmap-container heatmap-light">
+            {hourly_heatmap_light_svg}
         </section>
 
         <div class="section-title">5 Last Test Suite Runs</div>
@@ -1163,20 +1167,33 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
 
     print(f"Report generated successfully at: {output_file}")
 
+def save_heatmap_assets(history):
+    dark_svg = generate_svg_heatmap(history, theme="dark")
+    light_svg = generate_svg_heatmap(history, theme="light")
+    hourly_dark_svg = generate_hourly_svg_heatmap(history, theme="dark")
+    hourly_light_svg = generate_hourly_svg_heatmap(history, theme="light")
+
+    with open("data/heatmap_dark.svg", "w", encoding="utf-8") as f:
+        f.write(dark_svg)
+    with open("data/heatmap_light.svg", "w", encoding="utf-8") as f:
+        f.write(light_svg)
+    with open("data/heatmap.svg", "w", encoding="utf-8") as f:
+        f.write(dark_svg)
+
+    with open("data/hourly_heatmap_dark.svg", "w", encoding="utf-8") as f:
+        f.write(hourly_dark_svg)
+    with open("data/hourly_heatmap_light.svg", "w", encoding="utf-8") as f:
+        f.write(hourly_light_svg)
+    with open("data/hourly_heatmap.svg", "w", encoding="utf-8") as f:
+        f.write(hourly_dark_svg)
+
+    print("Heatmap SVGs (dark & light) generated successfully in data/")
+
 if __name__ == "__main__":
     if "--skip-tests" in sys.argv:
         print("Skipping tests (--skip-tests). Rendering dashboard from existing history...")
         history = load_history("data/history.json")
-        svg_code = generate_svg_heatmap(history)
-        with open("data/heatmap.svg", "w", encoding="utf-8") as f:
-            f.write(svg_code)
-        print("Heatmap SVG generated successfully at data/heatmap.svg")
-
-        hourly_svg_code = generate_hourly_svg_heatmap(history)
-        with open("data/hourly_heatmap.svg", "w", encoding="utf-8") as f:
-            f.write(hourly_svg_code)
-        print("Hourly Heatmap SVG generated successfully at data/hourly_heatmap.svg")
-
+        save_heatmap_assets(history)
         generate_html_report(history=history, output_file="public/index.html")
     else:
         print("Running unittest suite...")
@@ -1189,16 +1206,5 @@ if __name__ == "__main__":
 
         combined_results = unittest_results + pytest_results
         history = update_history(combined_results, "data/history.json")
-
-        # Generate standalone SVG heatmap images
-        svg_code = generate_svg_heatmap(history)
-        with open("data/heatmap.svg", "w", encoding="utf-8") as f:
-            f.write(svg_code)
-        print("Heatmap SVG generated successfully at data/heatmap.svg")
-
-        hourly_svg_code = generate_hourly_svg_heatmap(history)
-        with open("data/hourly_heatmap.svg", "w", encoding="utf-8") as f:
-            f.write(hourly_svg_code)
-        print("Hourly Heatmap SVG generated successfully at data/hourly_heatmap.svg")
-
+        save_heatmap_assets(history)
         generate_html_report(combined_results, history, "public/index.html")
