@@ -1211,6 +1211,42 @@ def save_heatmap_assets(history):
 
     print("Heatmap SVGs (dark & light) generated successfully in data/")
 
+def print_test_summary(title, results, is_suite=True, list_failures=True):
+    total = len(results)
+    prefix = f"{title} completed" if is_suite else title
+    if total == 0:
+        print(f"{prefix}: 0 tests executed.")
+        return
+
+    passed = sum(1 for r in results if r.get("status") == "passed")
+    failed_items = [r for r in results if r.get("status") in ("failed", "Error 429 - rate limit")]
+    failed = len(failed_items)
+    rate_limited = sum(1 for r in results if r.get("status") == "Error 429 - rate limit")
+    skipped = sum(1 for r in results if r.get("status") == "skipped")
+
+    parts = [f"{passed} passed"]
+    if failed > 0:
+        fail_str = f"{failed}/{total} failed"
+        if rate_limited > 0:
+            fail_str += f" [{rate_limited} rate-limited]"
+        parts.append(fail_str)
+    else:
+        parts.append(f"0/{total} failed")
+
+    if skipped > 0:
+        parts.append(f"{skipped} skipped")
+
+    breakdown = ", ".join(parts)
+    test_word = "test" if total == 1 else "tests"
+    executed_str = f"all {total} {test_word} executed" if total > 1 else f"1 test executed"
+    print(f"{prefix}: {executed_str} ({breakdown}).")
+
+    if list_failures and failed_items:
+        print(f"  Failed tests in {title}:")
+        for r in failed_items:
+            status = r.get("status", "failed")
+            print(f"    - {r.get('name', 'unknown')} ({status})")
+
 if __name__ == "__main__":
     if "--skip-tests" in sys.argv:
         print("Skipping tests (--skip-tests). Rendering dashboard from existing history...")
@@ -1220,13 +1256,16 @@ if __name__ == "__main__":
     else:
         print("Running unittest suite...")
         unittest_results = run_unittest_suite()
-        print(f"Unittest completed: {len(unittest_results)} tests executed.")
+        print_test_summary("Unittest", unittest_results)
 
         print("Running pytest suite...")
         pytest_results = run_pytest_suite()
-        print(f"Pytest completed: {len(pytest_results)} tests executed.")
+        print_test_summary("Pytest", pytest_results)
 
         combined_results = unittest_results + pytest_results
+        print_test_summary("Combined summary", combined_results, is_suite=False, list_failures=False)
+
         history = update_history(combined_results, "data/history.json")
         save_heatmap_assets(history)
         generate_html_report(combined_results, history, "public/index.html")
+
