@@ -94,9 +94,15 @@ googletrans-test/
 ├── .github/
 │   └── workflows/
 │       └── deploy-pages.yml  # GitHub Actions deploy workflow
+├── data/
+│   ├── heatmap.svg           # Rendered SVG activity heatmap
+│   └── history.json          # Appending execution records history
+├── public/
+│   └── index.html            # Generated test dashboard for GitHub Pages
 ├── tests/
 │   ├── test_pytest_suite.py  # Pytest test cases
 │   └── test_unittest_suite.py# Unittest test cases
+├── generate_heatmap.py       # SVG calendar heatmap generator
 ├── generate_report.py        # Custom HTML report generator
 ├── AGENTS.md                 # Guidelines for agentic development
 ├── CHANGELOG.md              # Project version history & release notes

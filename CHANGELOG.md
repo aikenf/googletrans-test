@@ -5,13 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.1] - 2026-10-08
+## [1.0.1] - 2026-10-10
+
+### Fixed
+- **Pytest Report Metadata Retention:** Pre-assigned `tested` and `expected` user properties prior to executing async requests so test details and expectations are preserved in the HTML report and `data/history.json` even when network or rate-limit errors occur.
+- **Accurate Unittest Execution Timers:** Replaced hardcoded execution duration constants in `CustomResult` with high-resolution `time.perf_counter()` timers.
+- **Cross-Language Fallback & Rate-Limit Detection:** Enhanced silent as-is fallback detection in both `test_pytest_suite.py` and `test_unittest_suite.py` to compare source and destination languages accurately across all pairings.
+- **CI Push Reliability:** Updated `.github/workflows/deploy-pages.yml` with `git pull --rebase origin ${{ github.ref_name }}` before pushing to protect against concurrent push conflicts.
 
 ### Changed
 - **Appending History File Format:** Converted `data/history.json` to a growing JSON list of execution records instead of overwriting history on each test run.
 - **Trigger Type Classification:** Added explicit `trigger` attribute ("scheduled" vs "manually triggered") to history run records.
 - **Heatmap Multi-Run Selection Logic:** Updated `generate_heatmap.py` to process list-based history records and select the worst result (highest failure count / lowest pass count) for dates with multiple test executions.
-- **Restored Historical Runs:** Restored the 3 historical contribution test execution records from git history.
+- **Documentation Alignment:** Updated directory tree in `README.md` to document `data/`, `public/`, and `generate_heatmap.py`.
+- **Restored Historical Runs:** Restored historical contribution test execution records in `data/history.json`.
 
 ## [1.0.0] - 2026-10-07
 

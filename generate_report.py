@@ -16,11 +16,24 @@ def run_unittest_suite():
 import unittest
 import json
 import traceback
+import time
 
 class CustomResult(unittest.TestResult):
     def __init__(self):
         super().__init__()
         self.results = []
+        self._start_times = {}
+
+    def startTest(self, test):
+        super().startTest(test)
+        self._start_times[test.id()] = time.perf_counter()
+
+    def _get_duration_str(self, test):
+        start = self._start_times.get(test.id())
+        if start is not None:
+            elapsed = time.perf_counter() - start
+            return f"{elapsed:.3f}s"
+        return "0.000s"
 
     def _extract_details(self, test, default_details="Test completed successfully."):
         tested = getattr(test, "tested", None)
@@ -41,7 +54,7 @@ class CustomResult(unittest.TestResult):
             "suite": "unittest",
             "name": test._testMethodName,
             "status": "passed",
-            "duration": "0.400s",
+            "duration": self._get_duration_str(test),
             "doc": info["doc"],
             "tested": info["tested"],
             "expected": info["expected"],
@@ -58,7 +71,7 @@ class CustomResult(unittest.TestResult):
             "suite": "unittest",
             "name": test._testMethodName,
             "status": status,
-            "duration": "10.400s" if status == "Error 429 - rate limit" else "0.400s",
+            "duration": self._get_duration_str(test),
             "doc": info["doc"],
             "tested": info["tested"],
             "expected": info["expected"],
@@ -75,7 +88,7 @@ class CustomResult(unittest.TestResult):
             "suite": "unittest",
             "name": test._testMethodName,
             "status": status,
-            "duration": "10.400s" if status == "Error 429 - rate limit" else "0.400s",
+            "duration": self._get_duration_str(test),
             "doc": info["doc"],
             "tested": info["tested"],
             "expected": info["expected"],

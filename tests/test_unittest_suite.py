@@ -34,8 +34,9 @@ class TestGoogletransUnittest(unittest.TestCase):
                 )
 
             returned_text = result.text if hasattr(result, 'text') else str(result)
+            detected_src = getattr(result, 'src', src)
 
-            if dest.lower() != 'en' and returned_text.strip() == text.strip():
+            if (dest.lower() != 'auto' and detected_src.lower() != dest.lower()) and returned_text.strip() == text.strip():
                 # Silently returned as-is
                 time.sleep(10)
                 self.fail(f"Translation returned text as-is without translating! Input: '{text}', Returned: '{returned_text}'. Rate limit / HTTP 429 suspected.")
