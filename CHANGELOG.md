@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] - 2026-10-10
+
+### Fixed
+- **CI Rebase with Unstaged Artifacts (Exit Code 128):** Fixed failure in `.github/workflows/run-tests.yml` where unstaged or modified files generated during the build run (such as `public/index.html`) blocked `git pull --rebase`. Added automatic stashing (`git stash --include-untracked` before rebase, followed by `git stash pop`) to guarantee clean rebases.
+- **Upgraded GitHub Actions to Latest Versions:** Replaced deprecated Node.js actions with their latest releases across both `.github/workflows/run-tests.yml` and `.github/workflows/deploy-pages.yml`:
+  - `actions/checkout@v7` (upgraded from `v4`)
+  - `actions/setup-python@v7` (upgraded from `v5`)
+  - `actions/configure-pages@v6` (upgraded from `v5`)
+  - `actions/upload-pages-artifact@v5` (upgraded from `v3`)
+  - `actions/deploy-pages@v5` (upgraded from `v4`)
+
 ## [1.0.2] - 2026-10-10
 
 ### Changed

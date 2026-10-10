@@ -600,7 +600,7 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
     <div class="container">
         <header>
             <h1>googletrans Test Suite Dashboard</h1>
-            <div class="subtitle">Generated on {now_str} UTC | Version 1.0.2 | Package: googletrans 4.0.2</div>
+            <div class="subtitle">Generated on {now_str} UTC | Version 1.0.3 | Package: googletrans 4.0.2</div>
         </header>
 
         <section class="summary-grid">
