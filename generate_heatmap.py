@@ -194,16 +194,19 @@ def generate_svg_heatmap(history, year=None, theme="dark"):
         approx_text_width = len(text_l) * 6 + 14 + 20
         curr_x += approx_text_width
 
-    svg_code = f"""<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="{svg_height}" viewBox="0 0 {svg_width} {svg_height}" preserveAspectRatio="xMidYMid meet">
+    svg_class = f"heatmap-svg-{theme}"
+    prefix = f".heatmap-svg-{theme}"
+
+    svg_code = f"""<svg class="{svg_class}" xmlns="http://www.w3.org/2000/svg" width="100%" height="{svg_height}" viewBox="0 0 {svg_width} {svg_height}" preserveAspectRatio="xMidYMid meet">
   <style>
-    .bg {{ fill: {bg_fill}; rx: 8px; }}
-    .title {{ fill: {title_fill}; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 600; }}
-    .month-label, .day-label {{ fill: {label_fill}; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }}
-    .legend-text {{ fill: {legend_fill}; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }}
+    {prefix} .bg, .bg {{ fill: {bg_fill}; rx: 8px; }}
+    {prefix} .title, .title {{ fill: {title_fill}; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 600; }}
+    {prefix} .month-label, {prefix} .day-label, .month-label, .day-label {{ fill: {label_fill}; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }}
+    {prefix} .legend-text, .legend-text {{ fill: {legend_fill}; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }}
     .heatmap-cell {{ cursor: pointer; transition: transform 0.1s; }}
-    .heatmap-cell:hover {{ stroke: {hover_stroke}; stroke-width: 1.5px; }}
+    {prefix} .heatmap-cell:hover {{ stroke: {hover_stroke}; stroke-width: 1.5px; }}
   </style>
-  <rect width="100%" height="100%" class="bg" />
+  <rect width="100%" height="100%" class="bg" fill="{bg_fill}" rx="8" ry="8" />
   <text x="{left_padding}" y="22" class="title">Test Suite Execution Heatmap ({year})</text>
   {''.join(month_svg_tags)}
   {''.join(day_svg_tags)}
@@ -438,16 +441,19 @@ def generate_hourly_svg_heatmap(history, end_date=None, num_days=53, theme="dark
         approx_text_width = len(text_l) * 6 + 14 + 20
         curr_x += approx_text_width
 
-    svg_code = f"""<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="{svg_height}" viewBox="0 0 {svg_width} {svg_height}" preserveAspectRatio="xMidYMid meet">
+    svg_class = f"heatmap-svg-{theme}"
+    prefix = f".heatmap-svg-{theme}"
+
+    svg_code = f"""<svg class="{svg_class}" xmlns="http://www.w3.org/2000/svg" width="100%" height="{svg_height}" viewBox="0 0 {svg_width} {svg_height}" preserveAspectRatio="xMidYMid meet">
   <style>
-    .bg {{ fill: {bg_fill}; rx: 8px; }}
-    .title {{ fill: {title_fill}; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 600; }}
-    .month-label, .day-label {{ fill: {label_fill}; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 9px; }}
-    .legend-text {{ fill: {legend_fill}; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }}
+    {prefix} .bg, .bg {{ fill: {bg_fill}; rx: 8px; }}
+    {prefix} .title, .title {{ fill: {title_fill}; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 600; }}
+    {prefix} .month-label, {prefix} .day-label, .month-label, .day-label {{ fill: {label_fill}; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 9px; }}
+    {prefix} .legend-text, .legend-text {{ fill: {legend_fill}; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }}
     .heatmap-cell {{ cursor: pointer; transition: transform 0.1s; }}
-    .heatmap-cell:hover {{ stroke: {hover_stroke}; stroke-width: 1.5px; }}
+    {prefix} .heatmap-cell:hover {{ stroke: {hover_stroke}; stroke-width: 1.5px; }}
   </style>
-  <rect width="100%" height="100%" class="bg" />
+  <rect width="100%" height="100%" class="bg" fill="{bg_fill}" rx="8" ry="8" />
   <text x="{left_padding}" y="22" class="title">Hourly Test Execution Heatmap (Past 53 Days)</text>
   {''.join(top_labels_svg)}
   {''.join(hour_svg_tags)}

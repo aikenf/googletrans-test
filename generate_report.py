@@ -555,6 +555,28 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
         [data-theme="light"] .heatmap-light {{
             display: block !important;
         }}
+        .heatmap-dark svg .bg {{
+            fill: #0d1117 !important;
+        }}
+        .heatmap-dark svg .title {{
+            fill: #c9d1d9 !important;
+        }}
+        .heatmap-dark svg .month-label,
+        .heatmap-dark svg .day-label,
+        .heatmap-dark svg .legend-text {{
+            fill: #8b949e !important;
+        }}
+        .heatmap-light svg .bg {{
+            fill: #ffffff !important;
+        }}
+        .heatmap-light svg .title {{
+            fill: #1f2328 !important;
+        }}
+        .heatmap-light svg .month-label,
+        .heatmap-light svg .day-label,
+        .heatmap-light svg .legend-text {{
+            fill: #656d76 !important;
+        }}
 
         .section-title {{
             font-size: 1.25rem;

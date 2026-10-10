@@ -1,13 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="188" viewBox="0 0 797 188" preserveAspectRatio="xMidYMid meet">
+<svg class="heatmap-svg-dark" xmlns="http://www.w3.org/2000/svg" width="100%" height="188" viewBox="0 0 797 188" preserveAspectRatio="xMidYMid meet">
   <style>
-    .bg { fill: #0d1117; rx: 8px; }
-    .title { fill: #c9d1d9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 600; }
-    .month-label, .day-label { fill: #8b949e; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }
-    .legend-text { fill: #8b949e; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }
+    .heatmap-svg-dark .bg, .bg { fill: #0d1117; rx: 8px; }
+    .heatmap-svg-dark .title, .title { fill: #c9d1d9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 600; }
+    .heatmap-svg-dark .month-label, .heatmap-svg-dark .day-label, .month-label, .day-label { fill: #8b949e; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }
+    .heatmap-svg-dark .legend-text, .legend-text { fill: #8b949e; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }
     .heatmap-cell { cursor: pointer; transition: transform 0.1s; }
-    .heatmap-cell:hover { stroke: #ffffff; stroke-width: 1.5px; }
+    .heatmap-svg-dark .heatmap-cell:hover { stroke: #ffffff; stroke-width: 1.5px; }
   </style>
-  <rect width="100%" height="100%" class="bg" />
+  <rect width="100%" height="100%" class="bg" fill="#0d1117" rx="8" ry="8" />
   <text x="35" y="22" class="title">Test Suite Execution Heatmap (2026)</text>
     <text x="35" y="40" class="month-label">Jan</text>  <text x="105" y="40" class="month-label">Feb</text>  <text x="161" y="40" class="month-label">Mar</text>  <text x="217" y="40" class="month-label">Apr</text>  <text x="273" y="40" class="month-label">May</text>  <text x="343" y="40" class="month-label">Jun</text>  <text x="399" y="40" class="month-label">Jul</text>  <text x="455" y="40" class="month-label">Aug</text>  <text x="525" y="40" class="month-label">Sep</text>  <text x="581" y="40" class="month-label">Oct</text>  <text x="651" y="40" class="month-label">Nov</text>  <text x="707" y="40" class="month-label">Dec</text>
     <text x="5" y="73" class="day-label">Mon</text>  <text x="5" y="101" class="day-label">Wed</text>  <text x="5" y="129" class="day-label">Fri</text>

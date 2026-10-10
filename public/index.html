@@ -267,6 +267,28 @@
         [data-theme="light"] .heatmap-light {
             display: block !important;
         }
+        .heatmap-dark svg .bg {
+            fill: #0d1117 !important;
+        }
+        .heatmap-dark svg .title {
+            fill: #c9d1d9 !important;
+        }
+        .heatmap-dark svg .month-label,
+        .heatmap-dark svg .day-label,
+        .heatmap-dark svg .legend-text {
+            fill: #8b949e !important;
+        }
+        .heatmap-light svg .bg {
+            fill: #ffffff !important;
+        }
+        .heatmap-light svg .title {
+            fill: #1f2328 !important;
+        }
+        .heatmap-light svg .month-label,
+        .heatmap-light svg .day-label,
+        .heatmap-light svg .legend-text {
+            fill: #656d76 !important;
+        }
 
         .section-title {
             font-size: 1.25rem;
@@ -540,7 +562,7 @@
         <header>
             <div class="header-info">
                 <h1>googletrans Test Suite Dashboard <span class="version-pill">v1.0.5</span></h1>
-                <div class="subtitle">Generated on 2026-10-10 16:45:26 UTC | Package: googletrans 4.0.2</div>
+                <div class="subtitle">Generated on 2026-10-10 16:52:14 UTC | Package: googletrans 4.0.2</div>
             </div>
             <div class="header-actions">
                 <button id="theme-toggle" class="theme-toggle-btn" type="button" aria-label="Toggle color theme" title="Toggle color theme">
@@ -582,16 +604,16 @@
         </section>
 
         <section class="heatmap-container heatmap-dark">
-            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="188" viewBox="0 0 797 188" preserveAspectRatio="xMidYMid meet">
+            <svg class="heatmap-svg-dark" xmlns="http://www.w3.org/2000/svg" width="100%" height="188" viewBox="0 0 797 188" preserveAspectRatio="xMidYMid meet">
   <style>
-    .bg { fill: #0d1117; rx: 8px; }
-    .title { fill: #c9d1d9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 600; }
-    .month-label, .day-label { fill: #8b949e; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }
-    .legend-text { fill: #8b949e; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }
+    .heatmap-svg-dark .bg, .bg { fill: #0d1117; rx: 8px; }
+    .heatmap-svg-dark .title, .title { fill: #c9d1d9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 600; }
+    .heatmap-svg-dark .month-label, .heatmap-svg-dark .day-label, .month-label, .day-label { fill: #8b949e; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }
+    .heatmap-svg-dark .legend-text, .legend-text { fill: #8b949e; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }
     .heatmap-cell { cursor: pointer; transition: transform 0.1s; }
-    .heatmap-cell:hover { stroke: #ffffff; stroke-width: 1.5px; }
+    .heatmap-svg-dark .heatmap-cell:hover { stroke: #ffffff; stroke-width: 1.5px; }
   </style>
-  <rect width="100%" height="100%" class="bg" />
+  <rect width="100%" height="100%" class="bg" fill="#0d1117" rx="8" ry="8" />
   <text x="35" y="22" class="title">Test Suite Execution Heatmap (2026)</text>
     <text x="35" y="40" class="month-label">Jan</text>  <text x="105" y="40" class="month-label">Feb</text>  <text x="161" y="40" class="month-label">Mar</text>  <text x="217" y="40" class="month-label">Apr</text>  <text x="273" y="40" class="month-label">May</text>  <text x="343" y="40" class="month-label">Jun</text>  <text x="399" y="40" class="month-label">Jul</text>  <text x="455" y="40" class="month-label">Aug</text>  <text x="525" y="40" class="month-label">Sep</text>  <text x="581" y="40" class="month-label">Oct</text>  <text x="651" y="40" class="month-label">Nov</text>  <text x="707" y="40" class="month-label">Dec</text>
     <text x="5" y="73" class="day-label">Mon</text>  <text x="5" y="101" class="day-label">Wed</text>  <text x="5" y="129" class="day-label">Fri</text>
@@ -1335,16 +1357,16 @@
 
         </section>
         <section class="heatmap-container heatmap-light">
-            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="188" viewBox="0 0 797 188" preserveAspectRatio="xMidYMid meet">
+            <svg class="heatmap-svg-light" xmlns="http://www.w3.org/2000/svg" width="100%" height="188" viewBox="0 0 797 188" preserveAspectRatio="xMidYMid meet">
   <style>
-    .bg { fill: #ffffff; rx: 8px; }
-    .title { fill: #1f2328; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 600; }
-    .month-label, .day-label { fill: #656d76; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }
-    .legend-text { fill: #656d76; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }
+    .heatmap-svg-light .bg, .bg { fill: #ffffff; rx: 8px; }
+    .heatmap-svg-light .title, .title { fill: #1f2328; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 600; }
+    .heatmap-svg-light .month-label, .heatmap-svg-light .day-label, .month-label, .day-label { fill: #656d76; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }
+    .heatmap-svg-light .legend-text, .legend-text { fill: #656d76; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }
     .heatmap-cell { cursor: pointer; transition: transform 0.1s; }
-    .heatmap-cell:hover { stroke: #1f2328; stroke-width: 1.5px; }
+    .heatmap-svg-light .heatmap-cell:hover { stroke: #1f2328; stroke-width: 1.5px; }
   </style>
-  <rect width="100%" height="100%" class="bg" />
+  <rect width="100%" height="100%" class="bg" fill="#ffffff" rx="8" ry="8" />
   <text x="35" y="22" class="title">Test Suite Execution Heatmap (2026)</text>
     <text x="35" y="40" class="month-label">Jan</text>  <text x="105" y="40" class="month-label">Feb</text>  <text x="161" y="40" class="month-label">Mar</text>  <text x="217" y="40" class="month-label">Apr</text>  <text x="273" y="40" class="month-label">May</text>  <text x="343" y="40" class="month-label">Jun</text>  <text x="399" y="40" class="month-label">Jul</text>  <text x="455" y="40" class="month-label">Aug</text>  <text x="525" y="40" class="month-label">Sep</text>  <text x="581" y="40" class="month-label">Oct</text>  <text x="651" y="40" class="month-label">Nov</text>  <text x="707" y="40" class="month-label">Dec</text>
     <text x="5" y="73" class="day-label">Mon</text>  <text x="5" y="101" class="day-label">Wed</text>  <text x="5" y="129" class="day-label">Fri</text>
@@ -2089,16 +2111,16 @@
         </section>
 
         <section class="heatmap-container heatmap-dark">
-            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="426" viewBox="0 0 797 426" preserveAspectRatio="xMidYMid meet">
+            <svg class="heatmap-svg-dark" xmlns="http://www.w3.org/2000/svg" width="100%" height="426" viewBox="0 0 797 426" preserveAspectRatio="xMidYMid meet">
   <style>
-    .bg { fill: #0d1117; rx: 8px; }
-    .title { fill: #c9d1d9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 600; }
-    .month-label, .day-label { fill: #8b949e; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 9px; }
-    .legend-text { fill: #8b949e; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }
+    .heatmap-svg-dark .bg, .bg { fill: #0d1117; rx: 8px; }
+    .heatmap-svg-dark .title, .title { fill: #c9d1d9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 600; }
+    .heatmap-svg-dark .month-label, .heatmap-svg-dark .day-label, .month-label, .day-label { fill: #8b949e; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 9px; }
+    .heatmap-svg-dark .legend-text, .legend-text { fill: #8b949e; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }
     .heatmap-cell { cursor: pointer; transition: transform 0.1s; }
-    .heatmap-cell:hover { stroke: #ffffff; stroke-width: 1.5px; }
+    .heatmap-svg-dark .heatmap-cell:hover { stroke: #ffffff; stroke-width: 1.5px; }
   </style>
-  <rect width="100%" height="100%" class="bg" />
+  <rect width="100%" height="100%" class="bg" fill="#0d1117" rx="8" ry="8" />
   <text x="35" y="22" class="title">Hourly Test Execution Heatmap (Past 53 Days)</text>
     <text x="35" y="40" class="month-label">Aug 19</text>  <text x="133" y="40" class="month-label">Aug 26</text>  <text x="231" y="40" class="month-label">Sep 02</text>  <text x="329" y="40" class="month-label">Sep 09</text>  <text x="427" y="40" class="month-label">Sep 16</text>  <text x="525" y="40" class="month-label">Sep 23</text>  <text x="623" y="40" class="month-label">Sep 30</text>  <text x="721" y="40" class="month-label">Oct 07</text>
     <text x="4" y="59" class="day-label">00:00</text>  <text x="4" y="101" class="day-label">03:00</text>  <text x="4" y="143" class="day-label">06:00</text>  <text x="4" y="185" class="day-label">09:00</text>  <text x="4" y="227" class="day-label">12:00</text>  <text x="4" y="269" class="day-label">15:00</text>  <text x="4" y="311" class="day-label">18:00</text>  <text x="4" y="353" class="day-label">21:00</text>
@@ -4656,16 +4678,16 @@
 
         </section>
         <section class="heatmap-container heatmap-light">
-            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="426" viewBox="0 0 797 426" preserveAspectRatio="xMidYMid meet">
+            <svg class="heatmap-svg-light" xmlns="http://www.w3.org/2000/svg" width="100%" height="426" viewBox="0 0 797 426" preserveAspectRatio="xMidYMid meet">
   <style>
-    .bg { fill: #ffffff; rx: 8px; }
-    .title { fill: #1f2328; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 600; }
-    .month-label, .day-label { fill: #656d76; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 9px; }
-    .legend-text { fill: #656d76; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }
+    .heatmap-svg-light .bg, .bg { fill: #ffffff; rx: 8px; }
+    .heatmap-svg-light .title, .title { fill: #1f2328; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 600; }
+    .heatmap-svg-light .month-label, .heatmap-svg-light .day-label, .month-label, .day-label { fill: #656d76; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 9px; }
+    .heatmap-svg-light .legend-text, .legend-text { fill: #656d76; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; }
     .heatmap-cell { cursor: pointer; transition: transform 0.1s; }
-    .heatmap-cell:hover { stroke: #1f2328; stroke-width: 1.5px; }
+    .heatmap-svg-light .heatmap-cell:hover { stroke: #1f2328; stroke-width: 1.5px; }
   </style>
-  <rect width="100%" height="100%" class="bg" />
+  <rect width="100%" height="100%" class="bg" fill="#ffffff" rx="8" ry="8" />
   <text x="35" y="22" class="title">Hourly Test Execution Heatmap (Past 53 Days)</text>
     <text x="35" y="40" class="month-label">Aug 19</text>  <text x="133" y="40" class="month-label">Aug 26</text>  <text x="231" y="40" class="month-label">Sep 02</text>  <text x="329" y="40" class="month-label">Sep 09</text>  <text x="427" y="40" class="month-label">Sep 16</text>  <text x="525" y="40" class="month-label">Sep 23</text>  <text x="623" y="40" class="month-label">Sep 30</text>  <text x="721" y="40" class="month-label">Oct 07</text>
     <text x="4" y="59" class="day-label">00:00</text>  <text x="4" y="101" class="day-label">03:00</text>  <text x="4" y="143" class="day-label">06:00</text>  <text x="4" y="185" class="day-label">09:00</text>  <text x="4" y="227" class="day-label">12:00</text>  <text x="4" y="269" class="day-label">15:00</text>  <text x="4" y="311" class="day-label">18:00</text>  <text x="4" y="353" class="day-label">21:00</text>
