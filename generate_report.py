@@ -302,7 +302,7 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
         }}
         .summary-grid {{
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
             gap: 1rem;
             margin-bottom: 2rem;
         }}
@@ -310,19 +310,41 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 1.25rem;
+            padding: 1.25rem 1rem;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }}
+        .summary-card .card-title {{
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
         }}
         .summary-card .number {{
-            font-size: 2rem;
-            font-weight: bold;
-            margin-top: 0.25rem;
+            font-size: 2.25rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-top: 0.35rem;
         }}
+        .summary-card .card-subtext {{
+            font-size: 0.725rem;
+            margin-top: 0.35rem;
+            padding: 0.15rem 0.45rem;
+            border-radius: 4px;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            font-weight: 500;
+        }}
+        .summary-card.total-runs .number {{ color: #c084fc; }}
+        .summary-card.total-runs .card-subtext {{ color: #d8b4fe; background-color: rgba(192, 132, 252, 0.15); }}
+        .summary-card.total .number {{ color: var(--accent-color); }}
         .summary-card.passed .number {{ color: var(--badge-passed-fg); }}
         .summary-card.failed .number {{ color: var(--badge-failed-fg); }}
         .summary-card.ratelimit .number {{ color: var(--badge-ratelimit-fg); }}
-        .summary-card.total .number {{ color: var(--accent-color); }}
-        .summary-card.total-runs .number {{ color: #a855f7; }}
 
         .heatmap-container {{
             background-color: var(--card-bg);
@@ -349,28 +371,32 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
         }}
 
         .recent-runs-container {{
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
             margin-bottom: 2rem;
         }}
         .run-card {{
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 1rem 1.25rem;
+            padding: 1rem;
             display: flex;
-            align-items: center;
+            flex-direction: column;
             justify-content: space-between;
+            gap: 0.75rem;
             cursor: pointer;
-            transition: background-color 0.2s, border-color 0.2s;
+            transition: all 0.2s ease;
         }}
-        .run-card:hover, .run-card.selected {{
+        .run-card:hover {{
             border-color: var(--accent-color);
             background-color: #1e293b;
+            transform: translateY(-2px);
         }}
         .run-card.selected {{
-            background-color: #334155;
+            border-color: var(--accent-color);
+            background-color: #1e293b;
+            box-shadow: 0 0 0 1px var(--accent-color);
         }}
         .run-info {{
             display: flex;
@@ -379,23 +405,27 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
         }}
         .run-timestamp {{
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.925rem;
+            color: var(--text-primary);
+            line-height: 1.3;
         }}
         .run-trigger {{
-            font-size: 0.8rem;
+            font-size: 0.725rem;
             color: var(--text-secondary);
             text-transform: capitalize;
         }}
         .run-stats {{
             display: flex;
-            gap: 0.75rem;
+            flex-wrap: wrap;
+            gap: 0.35rem;
             align-items: center;
         }}
         .stat-chip {{
-            font-size: 0.825rem;
+            font-size: 0.75rem;
             font-weight: 600;
-            padding: 0.25rem 0.6rem;
-            border-radius: 6px;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            line-height: 1.2;
         }}
         .stat-chip.passed {{ background-color: var(--badge-passed-bg); color: var(--badge-passed-fg); }}
         .stat-chip.failed {{ background-color: var(--badge-failed-bg); color: var(--badge-failed-fg); }}
@@ -570,29 +600,34 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
     <div class="container">
         <header>
             <h1>googletrans Test Suite Dashboard</h1>
-            <div class="subtitle">Generated on {now_str} UTC | Version 1.0.1 | Package: googletrans 4.0.2</div>
+            <div class="subtitle">Generated on {now_str} UTC | Version 1.0.2 | Package: googletrans 4.0.2</div>
         </header>
 
         <section class="summary-grid">
+            <div class="summary-card total-runs">
+                <div class="card-title">Total Runs</div>
+                <div class="number">{total_runs_count}</div>
+                <div class="card-subtext">All-time historical</div>
+            </div>
             <div class="summary-card total">
-                <div>Total Tests</div>
+                <div class="card-title">Total Tests</div>
                 <div class="number" id="card-total">{latest_run.get('total', 0)}</div>
+                <div class="card-subtext">Selected run</div>
             </div>
             <div class="summary-card passed">
-                <div>Passed</div>
+                <div class="card-title">Passed</div>
                 <div class="number" id="card-passed">{latest_run.get('passed', 0)}</div>
+                <div class="card-subtext">Selected run</div>
             </div>
             <div class="summary-card failed">
-                <div>Failed</div>
+                <div class="card-title">Failed</div>
                 <div class="number" id="card-failed">{latest_run.get('failed', 0)}</div>
+                <div class="card-subtext">Selected run</div>
             </div>
             <div class="summary-card ratelimit">
-                <div>Rate Limited (429)</div>
+                <div class="card-title">Rate Limited (429)</div>
                 <div class="number" id="card-ratelimit">{latest_run.get('rate_limit', 0)}</div>
-            </div>
-            <div class="summary-card total-runs">
-                <div>Total Runs</div>
-                <div class="number">{total_runs_count}</div>
+                <div class="card-subtext">Selected run</div>
             </div>
         </section>
 
