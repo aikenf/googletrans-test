@@ -9,12 +9,16 @@ A comprehensive test suite and dashboard for validating the [`googletrans`](http
 This repository provides:
 1. **Independent Test Suites:** Runs test cases using both `pytest` and Python's built-in `unittest` framework.
 2. **Interactive HTML Test Dashboard:** Automatically runs both test suites and produces a styled, searchable `index.html` report with collapsible test details and clear status badges (e.g., `passed`, `failed`, `Error 429 - rate limit`).
-3. **Daily Automated Testing & Heatmap Tracking:** Scheduled daily execution at 3:13 UTC with persistent test results stored as an appending list in `data/history.json` and a GitHub contribution-style heatmap visualization (selecting the worst result for dates with multiple runs).
-4. **Automated GitHub Pages Deployment:** Continuous integration via GitHub Actions deploys the test dashboard to GitHub Pages on every push and daily schedule.
+3. **Hourly Automated Testing & Dual Heatmap Tracking:** Scheduled hourly execution (at minute :13 UTC) with persistent test results stored as an appending list in `data/history.json`, paired with both a full-year daily heatmap and a granular 24-hour execution matrix across the past 53 days.
+4. **Automated GitHub Pages Deployment:** Continuous integration via GitHub Actions deploys the test dashboard to GitHub Pages on every push and hourly schedule.
 
 ## Daily Test Execution Heatmap
 
 ![Test Suite Execution Heatmap](data/heatmap.svg)
+
+## Hourly Test Execution Heatmap (Past 53 Days)
+
+![Hourly Test Execution Heatmap](data/hourly_heatmap.svg)
 
 ---
 
@@ -87,11 +91,11 @@ Open `public/index.html` in your web browser to view the interactive test report
 Testing and deployment workflows are decoupled for performance:
 1. **Push to `main` / `master` (`.github/workflows/deploy-pages.yml`):**
    - Triggers immediately on every push to update GitHub Pages.
-   - Runs `python generate_report.py --skip-tests` to quickly build `public/index.html` and `data/heatmap.svg` directly from the committed test history in `data/history.json`.
+   - Runs `python generate_report.py --skip-tests` to quickly build `public/index.html`, `data/heatmap.svg`, and `data/hourly_heatmap.svg` directly from the committed test history in `data/history.json`.
    - Deploys to GitHub Pages in seconds without running tests or encountering 429 timeouts.
 2. **Scheduled & Manual Test Suite (`.github/workflows/run-tests.yml`):**
-   - Triggers on daily schedule (`03:13 UTC`) or manual `workflow_dispatch`.
-   - Installs dependencies, runs both test suites via `python generate_report.py`, appends execution telemetry to `data/history.json`, updates `data/heatmap.svg`, commits the new history, and deploys the updated dashboard to GitHub Pages.
+   - Triggers on hourly schedule (`:13 UTC` every hour) or manual `workflow_dispatch`.
+   - Installs dependencies, runs both test suites via `python generate_report.py`, appends execution telemetry to `data/history.json`, updates `data/heatmap.svg` and `data/hourly_heatmap.svg`, commits the new history, and deploys the updated dashboard to GitHub Pages.
 
 ---
 
@@ -102,9 +106,10 @@ googletrans-test/
 ├── .github/
 │   └── workflows/
 │       ├── deploy-pages.yml  # Fast GitHub Pages deploy workflow on push
-│       └── run-tests.yml     # Scheduled daily & manual test execution workflow
+│       └── run-tests.yml     # Scheduled hourly & manual test execution workflow
 ├── data/
-│   ├── heatmap.svg           # Rendered SVG activity heatmap
+│   ├── heatmap.svg           # Rendered SVG yearly daily activity heatmap
+│   ├── hourly_heatmap.svg    # Rendered SVG past 53 days 24-hour execution matrix
 │   └── history.json          # Appending execution records history
 ├── public/
 │   └── index.html            # Generated test dashboard for GitHub Pages

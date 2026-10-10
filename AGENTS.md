@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Welcome! This repository contains test suites, custom test report generators, and CI/CD automation for validating the Python `googletrans` library (version 4.0.2) - Version 1.0.3.
+Welcome! This repository contains test suites, custom test report generators, and CI/CD automation for validating the Python `googletrans` library (version 4.0.2) - Version 1.0.4.
 
 ## Instructions for AI Agents & Developers
 
@@ -27,7 +27,7 @@ Welcome! This repository contains test suites, custom test report generators, an
   ```bash
   python generate_report.py
   ```
-  This command executes both test suites and generates `public/index.html` for GitHub Pages deployment. It appends the run entry to `data/history.json` and updates `data/heatmap.svg`.
+  This command executes both test suites and generates `public/index.html` for GitHub Pages deployment. It appends the run entry to `data/history.json` and updates `data/heatmap.svg` and `data/hourly_heatmap.svg`.
 - **Render Dashboard from Existing History (Fast, no tests run):**
   ```bash
   python generate_report.py --skip-tests
@@ -35,7 +35,8 @@ Welcome! This repository contains test suites, custom test report generators, an
 
 ### History Tracking & Heatmap Rules
 - `data/history.json` is an appending JSON list of test execution records containing `date`, `timestamp`, `total`, `passed`, `failed`, `rate_limit`, and `trigger` ("scheduled" or "manually triggered").
-- For dates with multiple run entries, `generate_heatmap.py` interprets the growing history by selecting the worst result (highest failure count / lowest pass count) for rendering that day's heatmap tile.
+- **Daily Heatmap (`data/heatmap.svg`):** For dates with multiple run entries, `generate_heatmap.py` interprets the growing history by selecting the worst result (highest failure count / lowest pass count) for rendering that day's heatmap tile.
+- **Hourly Heatmap (`data/hourly_heatmap.svg`):** Visualizes the past 53 days across 24 hourly rows (00:00 to 23:00). For (date, hour) slots with multiple run entries, it selects the worst result for rendering that hour's heatmap tile.
 
 ### Verification Checklist
 Before committing any changes:

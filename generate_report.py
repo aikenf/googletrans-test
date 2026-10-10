@@ -9,7 +9,7 @@ import subprocess
 import traceback
 from datetime import datetime
 import re
-from generate_heatmap import generate_svg_heatmap
+from generate_heatmap import generate_svg_heatmap, generate_hourly_svg_heatmap
 
 def sanitize_details(text):
     if not text:
@@ -276,6 +276,7 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
 
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     heatmap_svg = generate_svg_heatmap(history)
+    hourly_heatmap_svg = generate_hourly_svg_heatmap(history)
 
     # 5 Most Recent Runs
     recent_5_runs = list(reversed(history[-5:]))
@@ -676,7 +677,7 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
 <body>
     <div class="container">
         <header>
-            <h1>googletrans Test Suite Dashboard <span class="version-pill">v1.0.3</span></h1>
+            <h1>googletrans Test Suite Dashboard <span class="version-pill">v1.0.4</span></h1>
             <div class="subtitle">Generated on {now_str} UTC | Package: googletrans 4.0.2</div>
         </header>
 
@@ -710,6 +711,10 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
 
         <section class="heatmap-container">
             {heatmap_svg}
+        </section>
+
+        <section class="heatmap-container">
+            {hourly_heatmap_svg}
         </section>
 
         <div class="section-title">5 Last Test Suite Runs</div>
@@ -905,7 +910,10 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
                     const hasRuns = cell.getAttribute('data-has-runs') === 'true';
                     if (!hasRuns || !dateStr) return;
 
-                    // Find worst run on dateStr
+                    const hourAttr = cell.getAttribute('data-hour');
+                    const targetHour = hourAttr !== null ? parseInt(hourAttr, 10) : null;
+
+                    // Find worst run on dateStr (and targetHour if specified)
                     let worstIdx = -1;
                     let maxFailed = -1;
                     let minPassed = Infinity;
@@ -913,6 +921,20 @@ def generate_html_report(results=None, history=None, output_file="public/index.h
                     runHistory.forEach((run, idx) => {
                         const rDate = run.date || (run.timestamp ? run.timestamp.split(' ')[0] : '');
                         if (rDate === dateStr) {
+                            if (targetHour !== null) {
+                                let rHour = null;
+                                if (run.timestamp) {
+                                    const parts = run.timestamp.split(' ');
+                                    if (parts.length > 1) {
+                                        rHour = parseInt(parts[1].split(':')[0], 10);
+                                    } else if (run.timestamp.includes('T')) {
+                                        rHour = parseInt(run.timestamp.split('T')[1].split(':')[0], 10);
+                                    }
+                                }
+                                if (rHour !== targetHour) {
+                                    return;
+                                }
+                            }
                             const failed = run.failed || 0;
                             const passed = run.passed || 0;
                             if (failed > maxFailed || (failed === maxFailed && passed < minPassed)) {
@@ -947,6 +969,12 @@ if __name__ == "__main__":
         with open("data/heatmap.svg", "w", encoding="utf-8") as f:
             f.write(svg_code)
         print("Heatmap SVG generated successfully at data/heatmap.svg")
+
+        hourly_svg_code = generate_hourly_svg_heatmap(history)
+        with open("data/hourly_heatmap.svg", "w", encoding="utf-8") as f:
+            f.write(hourly_svg_code)
+        print("Hourly Heatmap SVG generated successfully at data/hourly_heatmap.svg")
+
         generate_html_report(history=history, output_file="public/index.html")
     else:
         print("Running unittest suite...")
@@ -960,10 +988,15 @@ if __name__ == "__main__":
         combined_results = unittest_results + pytest_results
         history = update_history(combined_results, "data/history.json")
 
-        # Generate standalone SVG heatmap image
+        # Generate standalone SVG heatmap images
         svg_code = generate_svg_heatmap(history)
         with open("data/heatmap.svg", "w", encoding="utf-8") as f:
             f.write(svg_code)
         print("Heatmap SVG generated successfully at data/heatmap.svg")
+
+        hourly_svg_code = generate_hourly_svg_heatmap(history)
+        with open("data/hourly_heatmap.svg", "w", encoding="utf-8") as f:
+            f.write(hourly_svg_code)
+        print("Hourly Heatmap SVG generated successfully at data/hourly_heatmap.svg")
 
         generate_html_report(combined_results, history, "public/index.html")

@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.4] - 2026-10-10
+
+### Added
+- **Hourly Test Execution Heatmap:** Added `generate_hourly_svg_heatmap()` and `generate_hourly_heatmap_data()` in `generate_heatmap.py` to generate a 53-column (past 53 days) by 24-row (hours 00:00–23:00) execution matrix (`data/hourly_heatmap.svg`) in the exact visual style and color scheme of the yearly heatmap.
+- **Interactive Hourly Cell Selection:** Updated the test report dashboard (`public/index.html` via `generate_report.py`) so clicking on any cell in the hourly heatmap dynamically selects the test run executed during that specific date and hour.
+- **Dual Heatmap Dashboard Display:** Embedded the hourly heatmap container directly below the yearly heatmap in the web dashboard and updated `README.md` with both visualizations.
+
+### Changed
+- **Hourly Scheduled Test Execution in CI:** Updated `.github/workflows/run-tests.yml` cron schedule from daily (`13 3 * * *`) to hourly (`13 * * * *`) to continuously detect temporal variations and peak demand hours where HTTP 429 rate limits occur.
+- **Multi-Heatmap Artifact Persistence:** Updated `.github/workflows/run-tests.yml` to track, commit, and deploy `data/hourly_heatmap.svg` alongside `data/heatmap.svg`.
+- **Fast Dashboard Generation (`--skip-tests`):** Updated `generate_report.py --skip-tests` to generate both `data/heatmap.svg` and `data/hourly_heatmap.svg`.
+
 ## [1.0.3] - 2026-10-10
 
 ### Fixed
