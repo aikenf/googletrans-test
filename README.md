@@ -74,16 +74,24 @@ To run both suites and generate the GitHub Pages report in `public/index.html`:
 ```bash
 python generate_report.py
 ```
+To quickly render `public/index.html` and `data/heatmap.svg` from existing `data/history.json` without executing tests:
+```bash
+python generate_report.py --skip-tests
+```
 Open `public/index.html` in your web browser to view the interactive test report with collapsible run details.
 
 ---
 
 ## Continuous Integration & GitHub Pages
 
-The GitHub Actions workflow `.github/workflows/deploy-pages.yml` automatically triggers on push to `main` / `master` branch. It:
-1. Installs Python dependencies.
-2. Runs `python generate_report.py` to test `googletrans` and render `public/index.html`.
-3. Uploads `public/` and deploys it directly to GitHub Pages using `actions/deploy-pages@v4`.
+Testing and deployment workflows are decoupled for performance:
+1. **Push to `main` / `master` (`.github/workflows/deploy-pages.yml`):**
+   - Triggers immediately on every push to update GitHub Pages.
+   - Runs `python generate_report.py --skip-tests` to quickly build `public/index.html` and `data/heatmap.svg` directly from the committed test history in `data/history.json`.
+   - Deploys to GitHub Pages in seconds without running tests or encountering 429 timeouts.
+2. **Scheduled & Manual Test Suite (`.github/workflows/run-tests.yml`):**
+   - Triggers on daily schedule (`03:13 UTC`) or manual `workflow_dispatch`.
+   - Installs dependencies, runs both test suites via `python generate_report.py`, appends execution telemetry to `data/history.json`, updates `data/heatmap.svg`, commits the new history, and deploys the updated dashboard to GitHub Pages.
 
 ---
 
@@ -93,7 +101,8 @@ The GitHub Actions workflow `.github/workflows/deploy-pages.yml` automatically t
 googletrans-test/
 ├── .github/
 │   └── workflows/
-│       └── deploy-pages.yml  # GitHub Actions deploy workflow
+│       ├── deploy-pages.yml  # Fast GitHub Pages deploy workflow on push
+│       └── run-tests.yml     # Scheduled daily & manual test execution workflow
 ├── data/
 │   ├── heatmap.svg           # Rendered SVG activity heatmap
 │   └── history.json          # Appending execution records history
@@ -103,7 +112,7 @@ googletrans-test/
 │   ├── test_pytest_suite.py  # Pytest test cases
 │   └── test_unittest_suite.py# Unittest test cases
 ├── generate_heatmap.py       # SVG calendar heatmap generator
-├── generate_report.py        # Custom HTML report generator
+├── generate_report.py        # Custom HTML report generator (--skip-tests supported)
 ├── AGENTS.md                 # Guidelines for agentic development
 ├── CHANGELOG.md              # Project version history & release notes
 ├── pyproject.toml            # Project configuration

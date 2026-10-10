@@ -226,18 +226,20 @@ def update_history(results, history_file="data/history.json"):
 
     return history
 
-def generate_html_report(results, history, output_file="public/index.html"):
+def generate_html_report(results=None, history=None, output_file="public/index.html"):
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    if history is None:
+        history = load_history("data/history.json")
 
     total_runs_count = len(history)
     latest_run = history[-1] if history else {
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "total": len(results),
-        "passed": sum(1 for r in results if r["status"] == "passed"),
-        "failed": sum(1 for r in results if r["status"] in ("failed", "Error 429 - rate limit")),
-        "rate_limit": sum(1 for r in results if r["status"] == "Error 429 - rate limit"),
+        "total": len(results) if results else 0,
+        "passed": sum(1 for r in results if r["status"] == "passed") if results else 0,
+        "failed": sum(1 for r in results if r["status"] in ("failed", "Error 429 - rate limit")) if results else 0,
+        "rate_limit": sum(1 for r in results if r["status"] == "Error 429 - rate limit") if results else 0,
         "trigger": "manually triggered",
-        "results": results
+        "results": results or []
     }
 
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -814,21 +816,30 @@ def generate_html_report(results, history, output_file="public/index.html"):
     print(f"Report generated successfully at: {output_file}")
 
 if __name__ == "__main__":
-    print("Running unittest suite...")
-    unittest_results = run_unittest_suite()
-    print(f"Unittest completed: {len(unittest_results)} tests executed.")
+    if "--skip-tests" in sys.argv:
+        print("Skipping tests (--skip-tests). Rendering dashboard from existing history...")
+        history = load_history("data/history.json")
+        svg_code = generate_svg_heatmap(history)
+        with open("data/heatmap.svg", "w", encoding="utf-8") as f:
+            f.write(svg_code)
+        print("Heatmap SVG generated successfully at data/heatmap.svg")
+        generate_html_report(history=history, output_file="public/index.html")
+    else:
+        print("Running unittest suite...")
+        unittest_results = run_unittest_suite()
+        print(f"Unittest completed: {len(unittest_results)} tests executed.")
 
-    print("Running pytest suite...")
-    pytest_results = run_pytest_suite()
-    print(f"Pytest completed: {len(pytest_results)} tests executed.")
+        print("Running pytest suite...")
+        pytest_results = run_pytest_suite()
+        print(f"Pytest completed: {len(pytest_results)} tests executed.")
 
-    combined_results = unittest_results + pytest_results
-    history = update_history(combined_results, "data/history.json")
+        combined_results = unittest_results + pytest_results
+        history = update_history(combined_results, "data/history.json")
 
-    # Generate standalone SVG heatmap image
-    svg_code = generate_svg_heatmap(history)
-    with open("data/heatmap.svg", "w", encoding="utf-8") as f:
-        f.write(svg_code)
-    print("Heatmap SVG generated successfully at data/heatmap.svg")
+        # Generate standalone SVG heatmap image
+        svg_code = generate_svg_heatmap(history)
+        with open("data/heatmap.svg", "w", encoding="utf-8") as f:
+            f.write(svg_code)
+        print("Heatmap SVG generated successfully at data/heatmap.svg")
 
-    generate_html_report(combined_results, history, "public/index.html")
+        generate_html_report(combined_results, history, "public/index.html")

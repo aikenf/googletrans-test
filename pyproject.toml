@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "googletrans-test"
-version = "1.0.1"
+version = "1.0.2"
 description = "Test suite and test reporting dashboard for googletrans Python package."
 authors = [{ name = " Frederick Aiken" }]
 dependencies = [

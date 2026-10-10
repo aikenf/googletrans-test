@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2] - 2026-10-10
+
+### Changed
+- **Decoupled CI/CD Workflows:** Separated automated test execution from push deployment to prevent slow builds and timeouts on pushes to `main`:
+  - `.github/workflows/deploy-pages.yml`: Runs on `push` to `main`/`master` and quickly builds and publishes GitHub Pages using committed historical data via `python generate_report.py --skip-tests` without executing network test suites.
+  - `.github/workflows/run-tests.yml`: Dedicated workflow for executing test suites, appending new results to `data/history.json`, updating `data/heatmap.svg`, and triggering deployments via daily schedule (`03:13 UTC`) or manual `workflow_dispatch`.
+- **Fast Dashboard Generation Option:** Added `--skip-tests` CLI option to `generate_report.py` to allow rendering `public/index.html` and `data/heatmap.svg` directly from existing history data in milliseconds.
+
 ## [1.0.1] - 2026-10-10
 
 ### Fixed

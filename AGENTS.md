@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Welcome! This repository contains test suites, custom test report generators, and CI/CD automation for validating the Python `googletrans` library (version 4.0.2) - Version 1.0.1.
+Welcome! This repository contains test suites, custom test report generators, and CI/CD automation for validating the Python `googletrans` library (version 4.0.2) - Version 1.0.2.
 
 ## Instructions for AI Agents & Developers
 
@@ -23,11 +23,15 @@ Welcome! This repository contains test suites, custom test report generators, an
   ```bash
   python -m unittest discover -s tests -p "test_unittest_*.py"
   ```
-- **Generate Custom Test Report:**
+- **Generate Custom Test Report (Run tests & update history):**
   ```bash
   python generate_report.py
   ```
   This command executes both test suites and generates `public/index.html` for GitHub Pages deployment. It appends the run entry to `data/history.json` and updates `data/heatmap.svg`.
+- **Render Dashboard from Existing History (Fast, no tests run):**
+  ```bash
+  python generate_report.py --skip-tests
+  ```
 
 ### History Tracking & Heatmap Rules
 - `data/history.json` is an appending JSON list of test execution records containing `date`, `timestamp`, `total`, `passed`, `failed`, `rate_limit`, and `trigger` ("scheduled" or "manually triggered").
