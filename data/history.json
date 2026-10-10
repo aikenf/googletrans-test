@@ -505,5 +505,236 @@
         "details": "Test completed successfully."
       }
     ]
+  },
+  {
+    "date": "2026-10-10",
+    "timestamp": "2026-10-10 03:30:42",
+    "total": 20,
+    "passed": 6,
+    "failed": 14,
+    "rate_limit": 10,
+    "trigger": "scheduled",
+    "results": [
+      {
+        "suite": "unittest",
+        "name": "test_batch_translation",
+        "status": "Error 429 - rate limit",
+        "duration": "10.400s",
+        "doc": "Unittest (Complicated): Batch translation of multiple sentences to French.",
+        "tested": "Batch translating list: ['One', 'Two', 'Three'] to French (dest='fr')",
+        "expected": "List of 3 Translated objects with dest='fr'",
+        "returned": "N/A",
+        "details": "Traceback (most recent call last):\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 58, in testPartExecutor\n    yield\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 634, in run\n    self._callTestMethod(testMethod)\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 589, in _callTestMethod\n    if method() is not None:\n       ^^^^^^^^\n  File \"/home/runner/work/googletrans-test/googletrans-test/tests/test_unittest_suite.py\", line 143, in test_batch_translation\n    self.fail(f\"Batch item '{orig}' returned as-is without translation! Rate limit suspected.\")\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 715, in fail\n    raise self.failureException(msg)\nAssertionError: Batch item 'One' returned as-is without translation! Rate limit suspected.\n"
+      },
+      {
+        "suite": "unittest",
+        "name": "test_english_to_german_as_is_check",
+        "status": "Error 429 - rate limit",
+        "duration": "10.400s",
+        "doc": "Unittest (Complicated): English to German, ensuring text is not returned as-is.",
+        "tested": "Translating English sentence 'The quick brown fox jumps over the lazy dog.' to German (dest='de')",
+        "expected": "German translation distinct from English source text (e.g. 'Der schnelle braune Fuchs...')",
+        "returned": "N/A",
+        "details": "Traceback (most recent call last):\n  File \"/home/runner/work/googletrans-test/googletrans-test/tests/test_unittest_suite.py\", line 41, in _run_translation_check\n    self.fail(f\"Translation returned text as-is without translating! Input: '{text}', Returned: '{returned_text}'. Rate limit / HTTP 429 suspected.\")\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 715, in fail\n    raise self.failureException(msg)\nAssertionError: Translation returned text as-is without translating! Input: 'The quick brown fox jumps over the lazy dog.', Returned: 'The quick brown fox jumps over the lazy dog.'. Rate limit / HTTP 429 suspected.\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 58, in testPartExecutor\n    yield\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 634, in run\n    self._callTestMethod(testMethod)\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 589, in _callTestMethod\n    if method() is not None:\n       ^^^^^^^^\n  File \"/home/runner/work/googletrans-test/googletrans-test/tests/test_unittest_suite.py\", line 123, in test_english_to_german_as_is_check\n    returned_text, result = self._run_translation_check(src_text, dest=\"de\")\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/googletrans-test/googletrans-test/tests/test_unittest_suite.py\", line 48, in _run_translation_check\n    self.fail(f\"HTTP 429 Rate Limit encountered: {e}\")\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 715, in fail\n    raise self.failureException(msg)\nAssertionError: HTTP 429 Rate Limit encountered: Translation returned text as-is without translating! Input: 'The quick brown fox jumps over the lazy dog.', Returned: 'The quick brown fox jumps over the lazy dog.'. Rate limit / HTTP 429 suspected.\n"
+      },
+      {
+        "suite": "unittest",
+        "name": "test_invalid_language_code",
+        "status": "passed",
+        "duration": "0.400s",
+        "doc": "Unittest (Edge Case): Invalid destination language code raises ValueError.",
+        "tested": "Translating 'Hello' with invalid destination language 'nonexistent_lang'",
+        "expected": "ValueError raised due to invalid language code",
+        "returned": "Raised exception: ValueError: invalid destination language",
+        "details": "Test completed successfully."
+      },
+      {
+        "suite": "unittest",
+        "name": "test_language_detection",
+        "status": "passed",
+        "duration": "0.400s",
+        "doc": "Unittest: Language auto-detection for English.",
+        "tested": "Detecting language for: 'This is a test sentence in English.'",
+        "expected": "Detected language code 'en'",
+        "returned": "lang='en', confidence=1",
+        "details": "Test completed successfully."
+      },
+      {
+        "suite": "unittest",
+        "name": "test_multiline_long_text",
+        "status": "Error 429 - rate limit",
+        "duration": "10.400s",
+        "doc": "Unittest (Complicated): Multiline long text translation to German.",
+        "tested": "Translating multiline text (length 182 chars) to German (dest='de')",
+        "expected": "German translated text longer than 20 chars, not identical to English source",
+        "returned": "N/A",
+        "details": "Traceback (most recent call last):\n  File \"/home/runner/work/googletrans-test/googletrans-test/tests/test_unittest_suite.py\", line 41, in _run_translation_check\n    self.fail(f\"Translation returned text as-is without translating! Input: '{text}', Returned: '{returned_text}'. Rate limit / HTTP 429 suspected.\")\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 715, in fail\n    raise self.failureException(msg)\nAssertionError: Translation returned text as-is without translating! Input: 'Googletrans is a free and unlimited python library that implemented Google Translate API.\nIt uses the Google Translate Ajax API to make calls to such methods as detect and translate.', Returned: 'Googletrans is a free and unlimited python library that implemented Google Translate API.\nIt uses the Google Translate Ajax API to make calls to such methods as detect and translate.'. Rate limit / HTTP 429 suspected.\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 58, in testPartExecutor\n    yield\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 634, in run\n    self._callTestMethod(testMethod)\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 589, in _callTestMethod\n    if method() is not None:\n       ^^^^^^^^\n  File \"/home/runner/work/googletrans-test/googletrans-test/tests/test_unittest_suite.py\", line 172, in test_multiline_long_text\n    returned_text, result = self._run_translation_check(long_text, dest=\"de\")\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/googletrans-test/googletrans-test/tests/test_unittest_suite.py\", line 48, in _run_translation_check\n    self.fail(f\"HTTP 429 Rate Limit encountered: {e}\")\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 715, in fail\n    raise self.failureException(msg)\nAssertionError: HTTP 429 Rate Limit encountered: Translation returned text as-is without translating! Input: 'Googletrans is a free and unlimited python library that implemented Google Translate API.\nIt uses the Google Translate Ajax API to make calls to such methods as detect and translate.', Returned: 'Googletrans is a free and unlimited python library that implemented Google Translate API.\nIt uses the Google Translate Ajax API to make calls to such methods as detect and translate.'. Rate limit / HTTP 429 suspected.\n"
+      },
+      {
+        "suite": "unittest",
+        "name": "test_pypi_readme_korean_example",
+        "status": "passed",
+        "duration": "0.400s",
+        "doc": "Unittest (PyPI README Simple Example 1): Korean text translation to English.",
+        "tested": "Translating '\uc548\ub155\ud558\uc138\uc694.' to English (pypi description standard usage)",
+        "expected": "Non-empty translated text in English (e.g. 'hello' or 'hi')",
+        "returned": "'\uc548\ub155\ud558\uc138\uc694.' (src=en, dest=en)",
+        "details": "Test completed successfully."
+      },
+      {
+        "suite": "unittest",
+        "name": "test_pypi_readme_latin_example",
+        "status": "failed",
+        "duration": "0.400s",
+        "doc": "Unittest (PyPI README Simple Example 2): Latin 'veritas lux mea' to English.",
+        "tested": "Translating Latin 'veritas lux mea' to English with explicit src='la'",
+        "expected": "Translated text containing 'truth' or 'light'",
+        "returned": "'veritas lux mea' (src=en, dest=en)",
+        "details": "Traceback (most recent call last):\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 58, in testPartExecutor\n    yield\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 634, in run\n    self._callTestMethod(testMethod)\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 589, in _callTestMethod\n    if method() is not None:\n       ^^^^^^^^\n  File \"/home/runner/work/googletrans-test/googletrans-test/tests/test_unittest_suite.py\", line 73, in test_pypi_readme_latin_example\n    self.assertTrue(\"truth\" in returned_text.lower() or \"light\" in returned_text.lower())\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 727, in assertTrue\n    raise self.failureException(msg)\nAssertionError: False is not true\n"
+      },
+      {
+        "suite": "unittest",
+        "name": "test_simple_translation",
+        "status": "Error 429 - rate limit",
+        "duration": "10.400s",
+        "doc": "Unittest: Simple single-word translation (English to Spanish).",
+        "tested": "Translating word 'Hello' to Spanish (dest='es')",
+        "expected": "'Hola'",
+        "returned": "N/A",
+        "details": "Traceback (most recent call last):\n  File \"/home/runner/work/googletrans-test/googletrans-test/tests/test_unittest_suite.py\", line 41, in _run_translation_check\n    self.fail(f\"Translation returned text as-is without translating! Input: '{text}', Returned: '{returned_text}'. Rate limit / HTTP 429 suspected.\")\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 715, in fail\n    raise self.failureException(msg)\nAssertionError: Translation returned text as-is without translating! Input: 'Hello', Returned: 'Hello'. Rate limit / HTTP 429 suspected.\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 58, in testPartExecutor\n    yield\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 634, in run\n    self._callTestMethod(testMethod)\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 589, in _callTestMethod\n    if method() is not None:\n       ^^^^^^^^\n  File \"/home/runner/work/googletrans-test/googletrans-test/tests/test_unittest_suite.py\", line 80, in test_simple_translation\n    returned_text, result = self._run_translation_check(\"Hello\", dest=\"es\")\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/googletrans-test/googletrans-test/tests/test_unittest_suite.py\", line 48, in _run_translation_check\n    self.fail(f\"HTTP 429 Rate Limit encountered: {e}\")\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 715, in fail\n    raise self.failureException(msg)\nAssertionError: HTTP 429 Rate Limit encountered: Translation returned text as-is without translating! Input: 'Hello', Returned: 'Hello'. Rate limit / HTTP 429 suspected.\n"
+      },
+      {
+        "suite": "unittest",
+        "name": "test_special_characters",
+        "status": "Error 429 - rate limit",
+        "duration": "10.400s",
+        "doc": "Unittest (Complicated): Handling unicode, special characters, and numbers.",
+        "tested": "Translating unicode/special char text 'Pyth\u00f6n & Tr\u00e4nslat\u00efon: 100% test!' to Spanish (dest='es')",
+        "expected": "Translated text preserving '100%'",
+        "returned": "N/A",
+        "details": "Traceback (most recent call last):\n  File \"/home/runner/work/googletrans-test/googletrans-test/tests/test_unittest_suite.py\", line 41, in _run_translation_check\n    self.fail(f\"Translation returned text as-is without translating! Input: '{text}', Returned: '{returned_text}'. Rate limit / HTTP 429 suspected.\")\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 715, in fail\n    raise self.failureException(msg)\nAssertionError: Translation returned text as-is without translating! Input: 'Pyth\u00f6n & Tr\u00e4nslat\u00efon: 100% test!', Returned: 'Pyth\u00f6n & Tr\u00e4nslat\u00efon: 100% test!'. Rate limit / HTTP 429 suspected.\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 58, in testPartExecutor\n    yield\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 634, in run\n    self._callTestMethod(testMethod)\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 589, in _callTestMethod\n    if method() is not None:\n       ^^^^^^^^\n  File \"/home/runner/work/googletrans-test/googletrans-test/tests/test_unittest_suite.py\", line 155, in test_special_characters\n    returned_text, result = self._run_translation_check(text, dest=\"es\")\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/googletrans-test/googletrans-test/tests/test_unittest_suite.py\", line 48, in _run_translation_check\n    self.fail(f\"HTTP 429 Rate Limit encountered: {e}\")\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 715, in fail\n    raise self.failureException(msg)\nAssertionError: HTTP 429 Rate Limit encountered: Translation returned text as-is without translating! Input: 'Pyth\u00f6n & Tr\u00e4nslat\u00efon: 100% test!', Returned: 'Pyth\u00f6n & Tr\u00e4nslat\u00efon: 100% test!'. Rate limit / HTTP 429 suspected.\n"
+      },
+      {
+        "suite": "unittest",
+        "name": "test_specific_language_pair",
+        "status": "failed",
+        "duration": "0.400s",
+        "doc": "Unittest: Specific language pair (German to English).",
+        "tested": "Translating German phrase 'Guten Morgen' to English (src='de', dest='en')",
+        "expected": "'Good morning'",
+        "returned": "'Guten Morgen' (src=en, dest=en)",
+        "details": "Traceback (most recent call last):\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 58, in testPartExecutor\n    yield\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 634, in run\n    self._callTestMethod(testMethod)\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 589, in _callTestMethod\n    if method() is not None:\n       ^^^^^^^^\n  File \"/home/runner/work/googletrans-test/googletrans-test/tests/test_unittest_suite.py\", line 99, in test_specific_language_pair\n    self.assertIn(\"good morning\", returned_text.lower())\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 1152, in assertIn\n    self.fail(self._formatMessage(msg, standardMsg))\n  File \"/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/unittest/case.py\", line 715, in fail\n    raise self.failureException(msg)\nAssertionError: 'good morning' not found in 'guten morgen'\n"
+      },
+      {
+        "suite": "pytest",
+        "name": "test_pypi_readme_korean_example",
+        "status": "passed",
+        "duration": "0.482s",
+        "doc": "Pytest item: tests/test_pytest_suite.py::test_pypi_readme_korean_example",
+        "tested": "Translating '\uc548\ub155\ud558\uc138\uc694.' to English (pypi description standard usage)",
+        "expected": "Non-empty translated text in English (e.g. 'hello' or 'hi')",
+        "returned": "'\uc548\ub155\ud558\uc138\uc694.' (src=en, dest=en)",
+        "details": "Test completed successfully."
+      },
+      {
+        "suite": "pytest",
+        "name": "test_pypi_readme_latin_example",
+        "status": "failed",
+        "duration": "0.264s",
+        "doc": "Pytest item: tests/test_pytest_suite.py::test_pypi_readme_latin_example",
+        "tested": "Translating Latin 'veritas lux mea' to English with explicit src='la'",
+        "expected": "Translated text containing 'truth' or 'light'",
+        "returned": "'veritas lux mea' (src=en, dest=en)",
+        "details": "request = <FixtureRequest for <Coroutine test_pypi_readme_latin_example>>\n\n    @pytest.mark.asyncio\n    async def test_pypi_readme_latin_example(request):\n        \"\"\"PyPI / GitHub README Simple Example 2: Translate Latin 'veritas lux mea' to English.\"\"\"\n        translator = Translator()\n        try:\n            tested = \"Translating Latin 'veritas lux mea' to English with explicit src='la'\"\n            expected = \"Translated text containing 'truth' or 'light'\"\n            tested_info, returned_text, result = await handle_translation_with_check(translator, \"veritas lux mea\", src=\"la\", dest=\"en\")\n    \n            request.node.user_properties.append((\"tested\", tested))\n            request.node.user_properties.append((\"expected\", expected))\n            request.node.user_properties.append((\"returned\", f\"'{returned_text}' (src={result.src}, dest={result.dest})\"))\n    \n            assert returned_text is not None\n>           assert \"truth\" in returned_text.lower() or \"light\" in returned_text.lower()\nE           AssertionError: assert ('truth' in 'veritas lux mea' or 'light' in 'veritas lux mea')\nE            +  where 'veritas lux mea' = <built-in method lower of str object at 0x7f6635533130>()\nE            +    where <built-in method lower of str object at 0x7f6635533130> = 'veritas lux mea'.lower\nE            +  and   'veritas lux mea' = <built-in method lower of str object at 0x7f6635533130>()\nE            +    where <built-in method lower of str object at 0x7f6635533130> = 'veritas lux mea'.lower\n\ntests/test_pytest_suite.py:70: AssertionError"
+      },
+      {
+        "suite": "pytest",
+        "name": "test_simple_word_english_to_spanish",
+        "status": "Error 429 - rate limit",
+        "duration": "10.525s",
+        "doc": "Pytest item: tests/test_pytest_suite.py::test_simple_word_english_to_spanish",
+        "tested": "N/A",
+        "expected": "N/A",
+        "returned": "N/A",
+        "details": "request = <FixtureRequest for <Coroutine test_simple_word_english_to_spanish>>\n\n    @pytest.mark.asyncio\n    async def test_simple_word_english_to_spanish(request):\n        \"\"\"Easy Test: Single word translation from English to Spanish.\"\"\"\n        translator = Translator()\n        try:\n            tested = \"Translating word 'Hello' to Spanish (dest='es')\"\n            expected = \"'Hola'\"\n>           tested_info, returned_text, result = await handle_translation_with_check(translator, \"Hello\", dest=\"es\")\n                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/test_pytest_suite.py:82: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\ntranslator = <googletrans.client.Translator object at 0x7f6634b15f40>\ntext = 'Hello', src = 'auto', dest = 'es', expected_check = None\n\n    async def handle_translation_with_check(translator, text, src='auto', dest='en', expected_check=None):\n        \"\"\"\n        Executes translation with rate limit detection and English as-is verification.\n        If 429 error occurs or if English source text is returned completely unchanged when\n        translating to a different language, sleep 10s and raise an AssertionError/Exception.\n        \"\"\"\n        tested_desc = f\"Translating text: '{text}' (src='{src}', dest='{dest}')\"\n        try:\n            if src == 'auto':\n                result = await translator.translate(text, dest=dest)\n            else:\n                result = await translator.translate(text, src=src, dest=dest)\n    \n            returned_text = result.text if hasattr(result, 'text') else str(result)\n    \n            # Check if returned text is identical to source text when translating to a non-English target\n            # or when source text was English and target is non-English (e.g., dest='de')\n            if dest.lower() != 'en' and returned_text.strip() == text.strip():\n                # Possible rate limit or silent as-is fallback error!\n                await asyncio.sleep(10)\n>               pytest.fail(f\"Translation returned text as-is without translating! Input: '{text}', Returned: '{returned_text}'. HTTP 429 or rate limit suspected.\")\nE               Failed: Translation returned text as-is without translating! Input: 'Hello', Returned: 'Hello'. HTTP 429 or rate limit suspected.\n\ntests/test_pytest_suite.py:26: Failed"
+      },
+      {
+        "suite": "pytest",
+        "name": "test_specific_language_pair_german_to_english",
+        "status": "failed",
+        "duration": "0.376s",
+        "doc": "Pytest item: tests/test_pytest_suite.py::test_specific_language_pair_german_to_english",
+        "tested": "Translating German phrase 'Guten Morgen' to English (src='de', dest='en')",
+        "expected": "'Good morning'",
+        "returned": "'Guten Morgen' (src=en, dest=en)",
+        "details": "request = <FixtureRequest for <Coroutine test_specific_language_pair_german_to_english>>\n\n    @pytest.mark.asyncio\n    async def test_specific_language_pair_german_to_english(request):\n        \"\"\"Medium Test: German to English translation.\"\"\"\n        translator = Translator()\n        try:\n            tested = \"Translating German phrase 'Guten Morgen' to English (src='de', dest='en')\"\n            expected = \"'Good morning'\"\n            tested_info, returned_text, result = await handle_translation_with_check(translator, \"Guten Morgen\", src=\"de\", dest=\"en\")\n    \n            request.node.user_properties.append((\"tested\", tested))\n            request.node.user_properties.append((\"expected\", expected))\n            request.node.user_properties.append((\"returned\", f\"'{returned_text}' (src={result.src}, dest={result.dest})\"))\n    \n            assert result.dest == \"en\"\n>           assert \"good morning\" in returned_text.lower()\nE           AssertionError: assert 'good morning' in 'guten morgen'\nE            +  where 'guten morgen' = <built-in method lower of str object at 0x7f66347c8230>()\nE            +    where <built-in method lower of str object at 0x7f66347c8230> = 'Guten Morgen'.lower\n\ntests/test_pytest_suite.py:110: AssertionError"
+      },
+      {
+        "suite": "pytest",
+        "name": "test_language_detection",
+        "status": "passed",
+        "duration": "0.319s",
+        "doc": "Pytest item: tests/test_pytest_suite.py::test_language_detection",
+        "tested": "Detecting language for: 'This is a test sentence in English.'",
+        "expected": "Detected language code 'en'",
+        "returned": "lang='en', confidence=1",
+        "details": "Test completed successfully."
+      },
+      {
+        "suite": "pytest",
+        "name": "test_english_to_german_as_is_check",
+        "status": "Error 429 - rate limit",
+        "duration": "10.323s",
+        "doc": "Pytest item: tests/test_pytest_suite.py::test_english_to_german_as_is_check",
+        "tested": "N/A",
+        "expected": "N/A",
+        "returned": "N/A",
+        "details": "request = <FixtureRequest for <Coroutine test_english_to_german_as_is_check>>\n\n    @pytest.mark.asyncio\n    async def test_english_to_german_as_is_check(request):\n        \"\"\"Complicated Test: English sentence to German, checking text is NOT returned as-is.\"\"\"\n        translator = Translator()\n        try:\n            src_text = \"The quick brown fox jumps over the lazy dog.\"\n            tested = f\"Translating English sentence '{src_text}' to German (dest='de')\"\n            expected = \"German translation distinct from English source text (e.g. 'Der schnelle braune Fuchs...')\"\n    \n>           tested_info, returned_text, result = await handle_translation_with_check(translator, src_text, dest=\"de\")\n                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/test_pytest_suite.py:147: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\ntranslator = <googletrans.client.Translator object at 0x7f6634b3f410>\ntext = 'The quick brown fox jumps over the lazy dog.', src = 'auto', dest = 'de'\nexpected_check = None\n\n    async def handle_translation_with_check(translator, text, src='auto', dest='en', expected_check=None):\n        \"\"\"\n        Executes translation with rate limit detection and English as-is verification.\n        If 429 error occurs or if English source text is returned completely unchanged when\n        translating to a different language, sleep 10s and raise an AssertionError/Exception.\n        \"\"\"\n        tested_desc = f\"Translating text: '{text}' (src='{src}', dest='{dest}')\"\n        try:\n            if src == 'auto':\n                result = await translator.translate(text, dest=dest)\n            else:\n                result = await translator.translate(text, src=src, dest=dest)\n    \n            returned_text = result.text if hasattr(result, 'text') else str(result)\n    \n            # Check if returned text is identical to source text when translating to a non-English target\n            # or when source text was English and target is non-English (e.g., dest='de')\n            if dest.lower() != 'en' and returned_text.strip() == text.strip():\n                # Possible rate limit or silent as-is fallback error!\n                await asyncio.sleep(10)\n>               pytest.fail(f\"Translation returned text as-is without translating! Input: '{text}', Returned: '{returned_text}'. HTTP 429 or rate limit suspected.\")\nE               Failed: Translation returned text as-is without translating! Input: 'The quick brown fox jumps over the lazy dog.', Returned: 'The quick brown fox jumps over the lazy dog.'. HTTP 429 or rate limit suspected.\n\ntests/test_pytest_suite.py:26: Failed"
+      },
+      {
+        "suite": "pytest",
+        "name": "test_batch_translation",
+        "status": "Error 429 - rate limit",
+        "duration": "10.772s",
+        "doc": "Pytest item: tests/test_pytest_suite.py::test_batch_translation",
+        "tested": "N/A",
+        "expected": "N/A",
+        "returned": "N/A",
+        "details": "request = <FixtureRequest for <Coroutine test_batch_translation>>\n\n    @pytest.mark.asyncio\n    async def test_batch_translation(request):\n        \"\"\"Complicated Test: Batch list of strings translation to Japanese.\"\"\"\n        translator = Translator()\n        try:\n            texts = [\"Good morning\", \"Thank you\", \"Goodbye\"]\n            tested = f\"Batch translating list: {texts} to Japanese (dest='ja')\"\n            expected = \"List of 3 Translated objects with dest='ja'\"\n    \n            results = await translator.translate(texts, dest=\"ja\")\n            returned_list = [r.text for r in results]\n    \n            # Check as-is on batch\n            for orig, trans in zip(texts, returned_list):\n                if orig == trans:\n                    await asyncio.sleep(10)\n>                   pytest.fail(f\"Batch item '{orig}' returned as-is without translation! Rate limit suspected.\")\nE                   Failed: Batch item 'Good morning' returned as-is without translation! Rate limit suspected.\n\ntests/test_pytest_suite.py:175: Failed"
+      },
+      {
+        "suite": "pytest",
+        "name": "test_special_characters_and_formatting",
+        "status": "Error 429 - rate limit",
+        "duration": "10.362s",
+        "doc": "Pytest item: tests/test_pytest_suite.py::test_special_characters_and_formatting",
+        "tested": "N/A",
+        "expected": "N/A",
+        "returned": "N/A",
+        "details": "request = <FixtureRequest for <Coroutine test_special_characters_and_formatting>>\n\n    @pytest.mark.asyncio\n    async def test_special_characters_and_formatting(request):\n        \"\"\"Complicated Test: Special characters, numbers, HTML tags preservation.\"\"\"\n        translator = Translator()\n        try:\n            text = \"Hello <b>world</b>! Special symbols: @#$% & 1234.\"\n            tested = f\"Translating formatted HTML text '{text}' to Spanish (dest='es')\"\n            expected = \"Translated text preserving HTML tags <b>...</b>, symbols @#$%, and numbers 1234\"\n    \n>           tested_info, returned_text, result = await handle_translation_with_check(translator, text, dest=\"es\")\n                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/test_pytest_suite.py:197: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\ntranslator = <googletrans.client.Translator object at 0x7f663494c7d0>\ntext = 'Hello <b>world</b>! Special symbols: @#$% & 1234.', src = 'auto'\ndest = 'es', expected_check = None\n\n    async def handle_translation_with_check(translator, text, src='auto', dest='en', expected_check=None):\n        \"\"\"\n        Executes translation with rate limit detection and English as-is verification.\n        If 429 error occurs or if English source text is returned completely unchanged when\n        translating to a different language, sleep 10s and raise an AssertionError/Exception.\n        \"\"\"\n        tested_desc = f\"Translating text: '{text}' (src='{src}', dest='{dest}')\"\n        try:\n            if src == 'auto':\n                result = await translator.translate(text, dest=dest)\n            else:\n                result = await translator.translate(text, src=src, dest=dest)\n    \n            returned_text = result.text if hasattr(result, 'text') else str(result)\n    \n            # Check if returned text is identical to source text when translating to a non-English target\n            # or when source text was English and target is non-English (e.g., dest='de')\n            if dest.lower() != 'en' and returned_text.strip() == text.strip():\n                # Possible rate limit or silent as-is fallback error!\n                await asyncio.sleep(10)\n>               pytest.fail(f\"Translation returned text as-is without translating! Input: '{text}', Returned: '{returned_text}'. HTTP 429 or rate limit suspected.\")\nE               Failed: Translation returned text as-is without translating! Input: 'Hello <b>world</b>! Special symbols: @#$% & 1234.', Returned: 'Hello <b>world</b>! Special symbols: @#$% & 1234.'. HTTP 429 or rate limit suspected.\n\ntests/test_pytest_suite.py:26: Failed"
+      },
+      {
+        "suite": "pytest",
+        "name": "test_multiline_long_text",
+        "status": "Error 429 - rate limit",
+        "duration": "10.296s",
+        "doc": "Pytest item: tests/test_pytest_suite.py::test_multiline_long_text",
+        "tested": "N/A",
+        "expected": "N/A",
+        "returned": "N/A",
+        "details": "request = <FixtureRequest for <Coroutine test_multiline_long_text>>\n\n    @pytest.mark.asyncio\n    async def test_multiline_long_text(request):\n        \"\"\"Complicated Test: Multiline long text translation to German.\"\"\"\n        translator = Translator()\n        try:\n            long_text = (\n                \"Googletrans is a free and unlimited python library that implemented \"\n                \"Google Translate API.\\n\"\n                \"It uses the Google Translate Ajax API to make calls to such methods \"\n                \"as detect and translate.\"\n            )\n            tested = f\"Translating multiline text (length {len(long_text)} chars) to German (dest='de')\"\n            expected = \"German translated text longer than 20 chars, not identical to English source\"\n    \n>           tested_info, returned_text, result = await handle_translation_with_check(translator, long_text, dest=\"de\")\n                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/test_pytest_suite.py:223: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\ntranslator = <googletrans.client.Translator object at 0x7f663494e720>\ntext = 'Googletrans is a free and unlimited python library that implemented Google Translate API.\\nIt uses the Google Translate Ajax API to make calls to such methods as detect and translate.'\nsrc = 'auto', dest = 'de', expected_check = None\n\n    async def handle_translation_with_check(translator, text, src='auto', dest='en', expected_check=None):\n        \"\"\"\n        Executes translation with rate limit detection and English as-is verification.\n        If 429 error occurs or if English source text is returned completely unchanged when\n        translating to a different language, sleep 10s and raise an AssertionError/Exception.\n        \"\"\"\n        tested_desc = f\"Translating text: '{text}' (src='{src}', dest='{dest}')\"\n        try:\n            if src == 'auto':\n                result = await translator.translate(text, dest=dest)\n            else:\n                result = await translator.translate(text, src=src, dest=dest)\n    \n            returned_text = result.text if hasattr(result, 'text') else str(result)\n    \n            # Check if returned text is identical to source text when translating to a non-English target\n            # or when source text was English and target is non-English (e.g., dest='de')\n            if dest.lower() != 'en' and returned_text.strip() == text.strip():\n                # Possible rate limit or silent as-is fallback error!\n                await asyncio.sleep(10)\n>               pytest.fail(f\"Translation returned text as-is without translating! Input: '{text}', Returned: '{returned_text}'. HTTP 429 or rate limit suspected.\")\nE               Failed: Translation returned text as-is without translating! Input: 'Googletrans is a free and unlimited python library that implemented Google Translate API.\nE               It uses the Google Translate Ajax API to make calls to such methods as detect and translate.', Returned: 'Googletrans is a free and unlimited python library that implemented Google Translate API.\nE               It uses the Google Translate Ajax API to make calls to such methods as detect and translate.'. HTTP 429 or rate limit suspected.\n\ntests/test_pytest_suite.py:26: Failed"
+      },
+      {
+        "suite": "pytest",
+        "name": "test_invalid_language_code",
+        "status": "passed",
+        "duration": "0.018s",
+        "doc": "Pytest item: tests/test_pytest_suite.py::test_invalid_language_code",
+        "tested": "Translating 'Hello' with invalid destination language 'invalid_lang_12345'",
+        "expected": "ValueError raised due to invalid language code",
+        "returned": "Raised exception: ValueError: invalid destination language",
+        "details": "Test completed successfully."
+      }
+    ]
   }
 ]
