@@ -50,7 +50,8 @@ jobs:
           git add data/history.json data/heatmap.svg README.md
           if ! git diff --staged --quiet; then
             git commit -m "chore: update test history and heatmap [skip ci]"
-            git push
+            git pull --rebase origin ${{ github.ref_name }}
+            git push origin ${{ github.ref_name }}
           fi
 
       - name: Setup GitHub Pages
