@@ -1,5 +1,4 @@
 import asyncio
-import time
 import pytest
 from googletrans import Translator
 
@@ -7,7 +6,7 @@ async def handle_translation_with_check(translator, text, src='auto', dest='en',
     """
     Executes translation with rate limit detection and as-is verification.
     If 429 error occurs or if source text is returned completely unchanged when
-    translating between different languages, sleep 10s and raise an AssertionError/Exception.
+    translating between different languages, raise an AssertionError/Exception immediately.
     """
     tested_desc = f"Translating text: '{text}' (src='{src}', dest='{dest}')"
     try:
@@ -23,14 +22,12 @@ async def handle_translation_with_check(translator, text, src='auto', dest='en',
         detected_src = getattr(result, 'src', src)
         if (dest.lower() != 'auto' and detected_src.lower() != dest.lower()) and returned_text.strip() == text.strip():
             # Possible rate limit or silent as-is fallback error!
-            await asyncio.sleep(10)
             pytest.fail(f"Translation returned text as-is without translating! Input: '{text}', Returned: '{returned_text}'. HTTP 429 or rate limit suspected.")
 
         return tested_desc, returned_text, result
     except Exception as e:
         err_str = str(e).lower()
         if "429" in err_str or "too many requests" in err_str:
-            await asyncio.sleep(10)
             pytest.fail(f"HTTP 429 Rate Limit encountered: {e}")
         raise e
 
@@ -172,7 +169,6 @@ async def test_batch_translation(request):
         # Check as-is on batch
         for orig, trans in zip(texts, returned_list):
             if orig == trans:
-                await asyncio.sleep(10)
                 pytest.fail(f"Batch item '{orig}' returned as-is without translation! Rate limit suspected.")
 
         request.node.user_properties.append(("returned", f"List of 3 items: {returned_list}"))

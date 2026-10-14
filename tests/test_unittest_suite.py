@@ -1,6 +1,5 @@
 import unittest
 import asyncio
-import time
 from googletrans import Translator
 
 class TestGoogletransUnittest(unittest.TestCase):
@@ -38,14 +37,12 @@ class TestGoogletransUnittest(unittest.TestCase):
 
             if (dest.lower() != 'auto' and detected_src.lower() != dest.lower()) and returned_text.strip() == text.strip():
                 # Silently returned as-is
-                time.sleep(10)
                 self.fail(f"Translation returned text as-is without translating! Input: '{text}', Returned: '{returned_text}'. Rate limit / HTTP 429 suspected.")
 
             return returned_text, result
         except Exception as e:
             err_str = str(e).lower()
             if "429" in err_str or "too many requests" in err_str:
-                time.sleep(10)
                 self.fail(f"HTTP 429 Rate Limit encountered: {e}")
             raise e
 
@@ -140,7 +137,6 @@ class TestGoogletransUnittest(unittest.TestCase):
 
         for orig, trans in zip(items, returned_list):
             if orig == trans:
-                time.sleep(10)
                 self.fail(f"Batch item '{orig}' returned as-is without translation! Rate limit suspected.")
 
         self.returned = f"List of 3 items: {returned_list}"
