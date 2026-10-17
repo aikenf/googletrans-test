@@ -589,8 +589,8 @@
     <title>2026-10-15: 24 runs | Worst run: 18/20 passed (90% pass ratio), 2 failed (0 rate limited)</title>
   </rect>  <rect class="heatmap-cell" data-date="2026-10-16" data-has-runs="true" x="609" y="120" width="11" height="11" rx="2" ry="2" fill="#da3633" stroke="#f85149" stroke-width="0.5">
     <title>2026-10-16: 24 runs | Worst run: 6/20 passed (30% pass ratio), 14 failed (10 rate limited)</title>
-  </rect>  <rect class="heatmap-cell" data-date="2026-10-17" data-has-runs="false" x="609" y="134" width="11" height="11" rx="2" ry="2" fill="#2d333b" stroke="#373e47" stroke-width="0.5">
-    <title>2026-10-17: No test runs (not covered)</title>
+  </rect>  <rect class="heatmap-cell" data-date="2026-10-17" data-has-runs="true" x="609" y="134" width="11" height="11" rx="2" ry="2" fill="#2e6f40" stroke="#39d353" stroke-width="0.5">
+    <title>2026-10-17: 1 run | 20/20 passed (100% pass ratio)</title>
   </rect>  <rect class="heatmap-cell" data-date="2026-10-18" data-has-runs="false" x="623" y="50" width="11" height="11" rx="2" ry="2" fill="#2d333b" stroke="#373e47" stroke-width="0.5">
     <title>2026-10-18: No test runs (not covered)</title>
   </rect>  <rect class="heatmap-cell" data-date="2026-10-19" data-has-runs="false" x="623" y="64" width="11" height="11" rx="2" ry="2" fill="#2d333b" stroke="#373e47" stroke-width="0.5">
