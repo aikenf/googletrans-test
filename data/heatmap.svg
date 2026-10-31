@@ -618,7 +618,7 @@
   </rect>  <rect class="heatmap-cell" data-date="2026-10-30" data-has-runs="true" x="637" y="120" width="11" height="11" rx="2" ry="2" fill="#da3633" stroke="#f85149" stroke-width="0.5">
     <title>2026-10-30: 24 runs | Worst run: 6/20 passed (30% pass ratio), 14 failed (10 rate limited)</title>
   </rect>  <rect class="heatmap-cell" data-date="2026-10-31" data-has-runs="true" x="637" y="134" width="11" height="11" rx="2" ry="2" fill="#da3633" stroke="#f85149" stroke-width="0.5">
-    <title>2026-10-31: 5 runs | Worst run: 6/20 passed (30% pass ratio), 14 failed (10 rate limited)</title>
+    <title>2026-10-31: 6 runs | Worst run: 6/20 passed (30% pass ratio), 14 failed (10 rate limited)</title>
   </rect>  <rect class="heatmap-cell" data-date="2026-11-01" data-has-runs="false" x="651" y="50" width="11" height="11" rx="2" ry="2" fill="#2d333b" stroke="#373e47" stroke-width="0.5">
     <title>2026-11-01: No test runs (not covered)</title>
   </rect>  <rect class="heatmap-cell" data-date="2026-11-02" data-has-runs="false" x="651" y="64" width="11" height="11" rx="2" ry="2" fill="#2d333b" stroke="#373e47" stroke-width="0.5">
