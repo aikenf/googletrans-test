@@ -1,8 +1,6 @@
 name: Scheduled Test Suite Execution
 
 on:
-  schedule:
-    - cron: '13 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -11,7 +9,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: "run-tests"
   cancel-in-progress: false
 
 jobs:
