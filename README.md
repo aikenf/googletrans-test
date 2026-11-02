@@ -1,5 +1,8 @@
 # googletrans-test
 
+![GitHub License](https://img.shields.io/github/license/aikenf/googletrans-test)
+![GitHub Release](https://img.shields.io/github/v/release/aikenf/googletrans-test)
+
 A comprehensive test suite and dashboard for validating the [`googletrans`](https://pypi.org/project/googletrans/) Python package (targeting version `4.0.2`).
 
 ## Overview
