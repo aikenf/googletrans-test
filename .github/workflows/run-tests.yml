@@ -3,21 +3,19 @@ name: Scheduled Test Suite Execution
 on:
   workflow_dispatch:
 
-permissions:
-  contents: write
-  pages: write
-  id-token: write
-
+# Serializes whole runs (build + deploy) so they can't overlap
 concurrency:
   group: "run-tests"
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
-  run-tests-and-deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # needed to push history/heatmap
     steps:
       - name: Checkout Code
         uses: actions/checkout@v7
@@ -34,22 +32,27 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run Tests and Generate Report
-        run: |
-          python generate_report.py
+        run: python generate_report.py
 
       - name: Commit and Push Updated Test History
+        env:
+          BRANCH: ${{ github.ref_name }}
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/history.json data/*.svg README.md
           if ! git diff --staged --quiet; then
             git commit -m "chore: update test history and heatmap [skip ci]"
-            # Stash any remaining untracked or modified artifacts (e.g. public/index.html) before rebasing
-            git stash --include-untracked
-            git pull --rebase origin ${{ github.ref_name }}
-            git stash pop || true
-            git push origin ${{ github.ref_name }}
+            for attempt in 1 2 3; do
+              git pull --rebase --autostash origin "$BRANCH" \
+                && git push origin "$BRANCH" && break
+              echo "Push attempt $attempt failed, retrying..."
+              sleep $((attempt * 5))
+            done
           fi
+
+      - name: Verify report output exists
+        run: test -f public/index.html && ls -la public/
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v6
@@ -59,6 +62,16 @@ jobs:
         with:
           path: "public/"
 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
