@@ -17,11 +17,11 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy-pages:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build-and-upload:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Needed for the existing history push
+      pages: read     # Needed by configure-pages
     steps:
       - name: Checkout Code
         uses: actions/checkout@v7
@@ -43,6 +43,17 @@ jobs:
         with:
           path: "public/"
 
+  deploy:
+    needs: build-and-upload
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+  
